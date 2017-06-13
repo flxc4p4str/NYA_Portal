@@ -1,4 +1,4 @@
-<div class="auth-main">
+<!--<div class="auth-main">
   <div class="auth-block">
     <h1 translate>{{'login.title'}}</h1>
     <a routerLink="/register" class="auth-link" translate>{{'login.signup_link'}}</a>
@@ -37,3 +37,48 @@
     </div>
   </div>
 </div>
+-->
+
+<div class="auth-main">
+  <div id="login" class="signin-card">
+    <div class="logo-image">
+      <img (click)="autoFillForm()" src="/assets/img/nyaLogo.png" alt="Logo" title="Logo">
+    </div>
+    <div class="login-form-container">
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+        <div class="group" [ngClass]="{'has-error': (!username.valid && username.touched), 'has-success': (username.valid && username.touched)}">
+          <input [formControl]="username" id="username" type="text" name="username" type="text" required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Name</label>
+        </div>
+        <div class="group" [ngClass]="{'has-error': (!password.valid && password.touched), 'has-success': (password.valid && password.touched)}">
+          <input [formControl]="password" type="password" id="password" name="password" required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Password</label>
+        </div>
+        <div class="submit-btn-container">
+          <div *ngIf="submitting" class="submit-btn-loader">
+            <svg class="spinner" width="29px" height="29px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+   <circle class="path" fill="none" stroke-width="3" stroke-linecap="round" cx="15" cy="15" r="13"></circle>
+</svg>
+            </div>
+          <div  *ngIf="!submitting"  class="submit-btn">
+            <button type="button" id="absSignInBtn"  data-loading="true" class="btn btn-primary btn-auth" (click)="onSubmit(form.value)">Sign in</button>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+
+<!--    <div class="auth-sep"><span><span>or Sign in with one click</span></span>
+    </div>
+    <div class="al-share-auth">
+      <ul class="al-share clearfix">
+        <li (click)="absSignIn('ABS')"><i class="socicon" title="Sign in with Absolution">)</i></li>
+      </ul>
+    </div>
+  </div>-->

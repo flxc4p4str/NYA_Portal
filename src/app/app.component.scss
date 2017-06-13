@@ -4,17 +4,17 @@
 :host /deep/ {
   @mixin layout-collapsed() {
     .al-main {
-      margin-left: 50px;
+      margin-left: 0;
     }
     .al-footer {
-      padding-left: 83px;
+      padding-left: 33px;
     }
   }
 
   @mixin sidebar-collapsed() {
     .al-sidebar {
-      width: 52px;
-
+      // width: 52px;
+      left:$sidebar-hidden-left;
       .fa-angle-down, .fa-angle-up {
         opacity: 0;
       }

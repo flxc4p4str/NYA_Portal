@@ -1,5 +1,6 @@
 import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
@@ -14,20 +15,29 @@ import { routing } from './app.routing';
 import { App } from './app.component';
 import { AppState, InternalStateType } from './app.service';
 import { GlobalState } from './global.state';
+import { HttpClientService } from './http-client';
+import { UserService } from './user.service';
+import { DataService } from './data.service';
+import { ABSFunctions } from './abs.functions';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
 
+import { DataTableModule, SharedModule, ButtonModule } from 'primeng/primeng';
 
 // Application wide providers
 const APP_PROVIDERS = [
   AppState,
-  GlobalState
+  GlobalState,
+  HttpClientService,
+  UserService,
+  DataService,
+  ABSFunctions,
 ];
 
 export type StoreType = {
   state: InternalStateType,
   restoreInputValues: () => void,
-  disposeOldHosts: () => void
+  disposeOldHosts: () => void,
 };
 
 /**
@@ -36,10 +46,11 @@ export type StoreType = {
 @NgModule({
   bootstrap: [App],
   declarations: [
-    App
+    App,
   ],
   imports: [ // import Angular's modules
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
     RouterModule,
     FormsModule,
@@ -47,11 +58,13 @@ export type StoreType = {
     NgaModule.forRoot(),
     NgbModule.forRoot(),
     PagesModule,
-    routing
+    routing,
+    DataTableModule,
+    ButtonModule,
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
-    APP_PROVIDERS
-  ]
+    APP_PROVIDERS,
+  ],
 })
 
 export class AppModule {

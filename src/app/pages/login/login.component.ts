@@ -1,33 +1,84 @@
-import {Component} from '@angular/core';
-import {FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { Http, Headers } from '@angular/http';
+import { Router } from '@angular/router';
+import { UserService } from '../../user.service';
+
+import * as authGlobals from '../../auth.globals';
 
 @Component({
-  selector: 'login',
+  selector: 'nga-login',
   templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  styleUrls: ['./login.scss'],
 })
-export class Login {
+export class LoginComponent implements OnInit {
 
-  public form:FormGroup;
-  public email:AbstractControl;
-  public password:AbstractControl;
-  public submitted:boolean = false;
+  form: FormGroup;
+  username: AbstractControl;
+  password: AbstractControl;
+  submitted: boolean = false;
+  submitting: boolean = false;
 
-  constructor(fb:FormBuilder) {
+    constructor(fb: FormBuilder, private http: Http, private router: Router
+    , private _userService: UserService) {
     this.form = fb.group({
-      'email': ['', Validators.compose([Validators.required, Validators.minLength(4)])],
+      'username': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       'password': ['', Validators.compose([Validators.required, Validators.minLength(4)])]
     });
 
-    this.email = this.form.controls['email'];
+    this.username = this.form.controls['username'];
     this.password = this.form.controls['password'];
   }
+  autoFillForm() {
+    this.form.patchValue({ username: 'rdw' });
+    this.form.patchValue({ password: '0ff1c3RDW' });
+    this.onSubmit(this.form.value);
+  }
 
-  public onSubmit(values:Object):void {
-    this.submitted = true;
+  onSubmit(values: Object): void {
+    this.submitting = true;
     if (this.form.valid) {
-      // your code goes here
-      // console.log(values);
+const bo = { un: encodeURI(values['username']), 
+pw: encodeURI(values['password']),
+scope: encodeURI(values['absdeveloper']) };
+     
+      const dataForBody = "grant_type=password&" +
+        "username=" + encodeURI(values["username"]) + "&" +
+        "password=" + encodeURI(values["password"]) + "&" +
+        "scope=" + encodeURI("absdeveloper");
+
+      const encodedClientIdAndSecret = btoa('absROPC:Th1s1sMyR4nd0mCl13ntS3cr3t!');
+      const messageHeaders = new Headers();
+      messageHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
+      messageHeaders.append('Authorization', 'Basic ' + encodedClientIdAndSecret)
+
+          this.saveToken('fake_token');
+          this.submitted = true;
+
+
+/*      this.http.post(authGlobals.tokenEndpoint, dataForBody, {
+        headers: messageHeaders,
+      })
+        .map(res => res.json())
+        .subscribe(
+        (data) => {
+          this.saveToken(data.access_token);
+          this.submitted = true;
+        },
+        );*/
     }
   }
+    ngOnInit() {
+      localStorage.clear();
+    this.submitting = false;
+  }  
+saveToken(token) {
+    localStorage['user_name'] = this.username.value;
+    localStorage['access_token'] = token;
+    this._userService.getUserInstance(this.username.value).subscribe(result => {
+      console.info('Authentication Success','Welcome back ' + result.userAccount.userName);
+
+      this.router.navigate(['pages/purchaseOrders', {}]);
+    });
+  }  
 }

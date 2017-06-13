@@ -1,3 +1,4 @@
+
 import { NgModule, ModuleWithProviders }      from '@angular/core';
 import { CommonModule }  from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ import {
   BaCheckbox,
   BaContentTop,
   BaFullCalendar,
+  BaInlineProfile,
   BaMenuItem,
   BaMenu,
   BaMsgCenter,
@@ -65,6 +67,7 @@ const NGA_COMPONENTS = [
   BaCheckbox,
   BaContentTop,
   BaFullCalendar,
+  BaInlineProfile,
   BaMenuItem,
   BaMenu,
   BaMsgCenter,
@@ -72,14 +75,14 @@ const NGA_COMPONENTS = [
   BaPageTop,
   BaPictureUploader,
   BaSidebar,
-  BaFileUploader
+  BaFileUploader,
 ];
 
 const NGA_DIRECTIVES = [
   BaScrollPosition,
   BaSlimScroll,
   BaThemeRun,
-  BaCardBlur
+  BaCardBlur,
 ];
 
 const NGA_PIPES = [
@@ -112,12 +115,12 @@ const NGA_VALIDATORS = [
     FormsModule,
     ReactiveFormsModule,
     AppTranslationModule,
-    NgUploaderModule
+    NgUploaderModule,
   ],
   exports: [
     ...NGA_PIPES,
     ...NGA_DIRECTIVES,
-    ...NGA_COMPONENTS
+    ...NGA_COMPONENTS,
   ]
 })
 export class NgaModule {

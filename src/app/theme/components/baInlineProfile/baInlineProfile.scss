@@ -1,0 +1,169 @@
+.profile {
+    box-sizing: border-box;
+    padding-top: 2em;
+    width: 250px;
+    height: 145px;
+    text-align: center;
+    background-size: 250px 145px;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16); }
+     .profile .profile-image {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 5px auto;
+      background-size: 60px 60px; }
+     .profile .profile-name {
+      display: inline-block;
+      color: #212121;
+      vertical-align: middle;
+      font-size: 1em; }
+     .profile i {
+      color: #212121;
+      vertical-align: middle;
+      -moz-transition: transform 0.3s;
+      -o-transition: transform 0.3s;
+      -webkit-transition: transform 0.3s;
+      transition: transform 0.3s; }
+     .profile.profile-expanded i {
+      -webkit-transform: rotate(-180deg);
+      -moz-transform: rotate(-180deg);
+      -o-transform: rotate(-180deg);
+      -ms-transform: rotate(-180deg);
+      transform: rotate(-180deg); }
+   .profile-menu {
+    border-bottom: 1px solid #d6d5d5;
+    margin-bottom: 0;
+    overflow: hidden; }
+     .profile-menu li:first-child {
+      margin-top: 1em; }
+     .profile-menu li:last-child {
+      margin-bottom: 1em; }
+
+/* Ripple */
+/* Ripple Effect Style like Google Material Buttons Effect*/
+.ripplelink {
+  /* display:block; */
+  /*color:#fff;*/
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  z-index: 0; }
+
+.ripplelink:hover {
+  /*z-index:1000;*/ }
+
+.ink {
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 100%;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0); }
+
+.ripple-animate {
+  -webkit-animation: ripple 0.65s linear;
+  -moz-animation: ripple 0.65s linear;
+  -ms-animation: ripple 0.65s linear;
+  -o-animation: ripple 0.65s linear;
+  animation: ripple 0.65s linear; }
+
+@-webkit-keyframes ripple {
+  100% {
+    opacity: 0;
+    -webkit-transform: scale(2.5); } }
+@-moz-keyframes ripple {
+  100% {
+    opacity: 0;
+    -moz-transform: scale(2.5); } }
+@-o-keyframes ripple {
+  100% {
+    opacity: 0;
+    -o-transform: scale(2.5); } }
+@keyframes ripple {
+  100% {
+    opacity: 0;
+    transform: scale(2.5); } }
+          
+  .ultima-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+   .ultima-menu li a {
+    font-size: 1em;
+    display: block;
+    padding: .5em 1em;
+    color: #212121;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-transition: background-color 0.3s;
+    -o-transition: background-color 0.3s;
+    -webkit-transition: background-color 0.3s;
+    transition: background-color 0.3s;
+    overflow: hidden; }
+     .ultima-menu li a i {
+      color: #757575; }
+     .ultima-menu li a i:first-child {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: .5em;
+      font-size: 1.5em; }
+     .ultima-menu li a i:last-child {
+      float: right;
+      font-size: 20px;
+      margin-top: .15em;
+      margin-right: -.15em;
+      -moz-transition: transform 0.3s;
+      -o-transition: transform 0.3s;
+      -webkit-transition: transform 0.3s;
+      transition: transform 0.3s; }
+     .ultima-menu li a:hover {
+      background-color: #e8e8e8; }
+     .ultima-menu li a span {
+      display: inline-block;
+      vertical-align: middle; }
+     .ultima-menu li a.active-menuitem-routerlink {
+      color: #FF5722; }
+       .ultima-menu li a.active-menuitem-routerlink > i {
+        color: #FF5722; }
+       .ultima-menu li a.active-menuitem-routerlink:hover {
+        color: #212121; }
+         .ultima-menu li a.active-menuitem-routerlink:hover > i {
+          color: #757575; }
+   .ultima-menu li.active-menuitem > a {
+    color: #757575;
+    background-color: #e8e8e8; }
+     .ultima-menu li.active-menuitem > a i:last-child {
+      -webkit-transform: rotate(-180deg);
+      -moz-transform: rotate(-180deg);
+      -o-transform: rotate(-180deg);
+      -ms-transform: rotate(-180deg);
+      transform: rotate(-180deg); }
+   .ultima-menu li ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow: hidden; }
+     .ultima-menu li ul li a {
+      padding: .5em 1em .5em 2em; }
+       .ultima-menu li ul li a > span {
+        font-size: 15px; }
+       .ultima-menu li ul li a i:first-child {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: .6em;
+        font-size: 1.250em; }
+     .ultima-menu li ul li ul li a {
+      padding-left: 3em; }
+     .ultima-menu li ul li ul ul li a {
+      padding-left: 4em; }
+     .ultima-menu li ul li ul ul ul li a {
+      padding-left: 5em; }
+     .ultima-menu li ul li ul ul ul ul li a {
+      padding-left: 6em; }

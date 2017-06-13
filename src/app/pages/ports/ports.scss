@@ -1,0 +1,214 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    /*position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;*/
+}
+
+
+.li-tr{
+  width:100%;
+  cursor:pointer;
+}
+.li-th{
+width:25%;
+float:left;
+color:#fff;
+background-color: #424242;
+padding: 7px 5px;
+}
+
+.li-td{
+width:25%;
+float:left;
+padding: 5px;
+}
+.th-pos, .td-pos, .th-poCtnsOpn, .td-poCtnsOpn {
+  text-align: right;
+}
+
+.li-tr.active{
+  background-color:#ef7b38;
+  color:#fff;
+}
+
+
+
+
+
+.li-slideout{
+  width:100%;
+      background-color: rgba(255, 255, 255, 0.80);
+  height:0;
+  transition: all 0.5s ease;
+  display:flex;
+  flex-wrap: wrap;
+  align-items:flex-start;
+  align-content: flex-start;
+  padding: 0 5px;
+
+}
+
+.li-slideout-open{
+  border-top: 1px solid #424242;
+  border-bottom: 1px solid #424242;
+  height:150px;
+}
+.li-vendor{
+  width:50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 5px;
+  color: #424242;
+}
+.li-vendor.even{
+  background-color: #ddd;
+}
+.li-vendor.even{
+  background-color: #FFF;
+}
+.li-vendor-key{
+width:15px;
+height:15px;
+border: 1px solid #424242;
+background-color: transparent;
+margin-right: 5px;
+}
+.li-vendor-code{
+margin-right: 5px;
+
+}
+.custom-list-slideout{
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.view {
+  /*fill: url(#gradient);*/
+  fill: transparent;
+  /*stroke: #000;*/
+}
+
+.svg-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.listPW {
+  list-style: none;
+}
+.listPW.active {
+  color: green;
+}
+
+.col1 {
+    display: flex;
+    flex-grow: 1;
+}
+
+.col2 {
+    display: flex;
+    flex-grow: 3;
+}
+
+.ports {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    background-color:  #eff5f5;
+}
+
+/*body {
+  margin: 0;
+  font-family: arial, sans;
+}*/
+
+.label {
+  font-size: 15px;
+}
+
+.legend{
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.legend text,
+.axis text {
+  font-size: 13px;
+  fill: #333;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke-width:1px;
+  stroke: #e7e7e7;
+}
+
+circle {
+  stroke: #fff;
+}
+
+.bubble {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.bubble text {
+  opacity: 0;
+  pointer-events: none;
+  font-size: 12px;
+}
+
+.bubble:hover text {
+  opacity: 1;
+}
+
+.bubble:hover circle {
+  fill-opacity: 1;
+}
+
+
+
+.mytt {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  height: 100px;
+  padding: 5px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  color: black;
+}

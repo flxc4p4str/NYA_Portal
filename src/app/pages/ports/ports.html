@@ -1,0 +1,47 @@
+<!--<div class="row ">
+
+
+
+</div>-->
+
+<div #portListContainer *ngIf="PWs" class="col-sm-3 col-12">
+  <ba-card title="Ports" baCardClass="with-scroll port-list-panel">
+    <ul id="grouplist" class="listPW list-group">
+      <li class="li-tr">
+        <div class="li-th th-portCodeOrig">Orig</div>
+        <div class="li-th th-whseCode">Dest</div>
+        <div class="li-th th-pos">POs</div>
+        <div class="li-th th-poCtnsOpn">Ctns</div>
+      </li>
+
+      <li *ngFor="let PW of PWs; let even = even; let odd = odd" class="li-tr" [ngClass]="{'active': selectedItem == PW, 'li-odd': odd, 'li-even': even}" (click)="listClick($event, PW)">
+        <div class="custom-list-slideout">
+          <div>
+            <div class="li-td td-portCodeOrig">{{PW.portCodeOrig}}</div>
+            <div class="li-td td-whseCode">{{PW.whseCode}}</div>
+            <div class="li-td td-pos">{{PW.pos}}</div>
+            <div class="li-td td-poCtnsOpn">{{PW.poCtnsOpn | number : '1.0-0'}}</div>
+          </div>
+          <div class="li-slideout" [ngClass]="{'li-slideout-open': selectedItem == PW}">
+            <div *ngFor="let PV of PW.portVendors; let even = even; let odd = odd" 
+            class="li-vendor li-vendor-{{PV.vendCode}}" 
+            [ngClass]="{'liv-odd': odd, 'liv-even': even}"
+            (mouseover)="vlMouseOver(PV)" (mouseout)="vlMouseOut(PV)" >
+              <div class="li-vendor-key" 
+              [ngStyle]="{'background-color': PV.keyColor}"></div>
+              <div class="li-vendor-code">{{PV.vendCode}}</div>
+              <div class="li-vendor-ctns">{{PV.poCtnsOpn}}</div>
+            </div>
+          </div>
+          </div>
+      </li>
+    </ul>
+  </ba-card>
+  </div>
+
+  <div #chartContainer class="col-sm-9 col-12">
+    <ba-card baCardClass="ports-chart">
+      <div class="mytt">tooltip</div>
+      <div id="chart"></div>
+    </ba-card>
+  </div>

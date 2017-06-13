@@ -4,6 +4,9 @@ import { Routes } from '@angular/router';
 import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
 
+// to add breadcrumb
+//         <ba-content-top></ba-content-top>
+
 @Component({
   selector: 'pages',
   template: `
@@ -11,20 +14,12 @@ import { PAGES_MENU } from './pages.menu';
     <ba-page-top></ba-page-top>
     <div class="al-main">
       <div class="al-content">
-        <ba-content-top></ba-content-top>
         <router-outlet></router-outlet>
       </div>
     </div>
     <footer class="al-footer clearfix">
-      <div class="al-footer-right" translate>{{'general.created_with'}} <i class="ion-heart"></i></div>
       <div class="al-footer-main clearfix">
-        <div class="al-copy">&copy; <a href="http://akveo.com" translate>{{'general.akveo'}}</a> 2016</div>
-        <ul class="al-share clearfix">
-          <li><i class="socicon socicon-facebook"></i></li>
-          <li><i class="socicon socicon-twitter"></i></li>
-          <li><i class="socicon socicon-google"></i></li>
-          <li><i class="socicon socicon-github"></i></li>
-        </ul>
+        <div class="al-copy">&copy; <a href="http://absolution.com" translate>{{'general.abs'}}</a> 2017</div>
       </div>
     </footer>
     <ba-back-top position="200"></ba-back-top>
@@ -32,7 +27,7 @@ import { PAGES_MENU } from './pages.menu';
 })
 export class Pages {
 
-  constructor(private _menuService: BaMenuService,) {
+  constructor(private _menuService: BaMenuService) {
   }
 
   ngOnInit() {

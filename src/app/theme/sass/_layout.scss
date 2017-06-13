@@ -18,7 +18,10 @@ html, body {
 main {
   min-height: 100%;
   position: relative;
-  font: 14px/16px $font-family;
+  font-family: $font-family;
+    font-size: 16px;
+    line-height: 1.5em;
+    -webkit-font-smoothing: antialiased;  
   color: $default-text;
 
   @include body-bg();
@@ -64,6 +67,10 @@ a {
   padding: 66px 0 34px 0;
   min-height: 500px;
   position: relative;
+    -moz-transition: margin-left 0.3s;
+  -o-transition: margin-left 0.3s;
+  -webkit-transition: margin-left 0.3s;
+  transition: margin-left 0.3s;
 }
 
 .al-footer {
@@ -137,7 +144,7 @@ a {
 }
 
 .al-content {
-  padding: 8px 32px 8px 40px;
+  padding: 38px 32px 8px 40px;
 }
 
 @media screen and (max-width: $resXS) {
