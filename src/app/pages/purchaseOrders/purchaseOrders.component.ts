@@ -38,7 +38,8 @@ export class PurchaseOrdersComponent implements OnInit {
           }
 this.totalRecords = x.length;
 this.POTORDR1s_ds = x;
-          this.POTORDR1s = x.slice(0, 10);
+          //this.POTORDR1s = x.slice(0, 10);
+          this.POTORDR1s = x;
         } else {
           this.POTORDR1s_ds = null;
           this.POTORDR1s = null; // this.BSTCBSCM_empty;

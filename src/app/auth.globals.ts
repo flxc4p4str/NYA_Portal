@@ -14,4 +14,4 @@ export const authorizationEndpoint = 'https://rdwIdentityServer.absolution1.com/
 // export const apiBase = 'https://rdwDataService.absolution1.com/';
 // export var authorizationEndpoint='https://rdwIdentityServer.absolution1.com/identity/connect/authorize?';
 
-export const apiBase = 'http://nyaData.nyagportal.com/';
+ export const apiBase = 'http://nyaData.nyagportal.com/';
