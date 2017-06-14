@@ -8,17 +8,29 @@
     right: 0;*/
 }
 
+#PortListContainer{
+  width: 20%;
+}
+#ChartContainer{
+  width: 80%;
+  margin-left: 2vh;
+}
+
 
 .li-tr{
   width:100%;
   cursor:pointer;
+  display:flex;
+}
+.li-hr{
+  background-color: #424242;
 }
 .li-th{
 width:25%;
 float:left;
 color:#fff;
-background-color: #424242;
 padding: 7px 5px;
+
 }
 
 .li-td{
@@ -30,13 +42,15 @@ padding: 5px;
   text-align: right;
 }
 
-.li-tr.active{
+.li-dr.active{
   background-color:#ef7b38;
   color:#fff;
 }
 
 
-
+.th-portCodeOrig, .th-portCodeOrig {
+  border-left:none;
+}
 
 
 .li-slideout{
@@ -48,14 +62,13 @@ padding: 5px;
   flex-wrap: wrap;
   align-items:flex-start;
   align-content: flex-start;
-  padding: 0 5px;
-
+  padding: 0 25px;
+overflow: hidden;
 }
 
 .li-slideout-open{
   border-top: 1px solid #424242;
   border-bottom: 1px solid #424242;
-  height:150px;
 }
 .li-vendor{
   width:50%;
@@ -77,6 +90,7 @@ height:15px;
 border: 1px solid #424242;
 background-color: transparent;
 margin-right: 5px;
+min-width:15px;
 }
 .li-vendor-code{
 margin-right: 5px;
@@ -198,17 +212,3 @@ circle {
 
 
 
-.mytt {
-  position: absolute;
-  text-align: center;
-  width: 180px;
-  height: 100px;
-  padding: 5px;
-  font: 12px sans-serif;
-  background: lightsteelblue;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-  opacity: 0;
-  color: black;
-}

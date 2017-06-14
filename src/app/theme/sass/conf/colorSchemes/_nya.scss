@@ -424,3 +424,21 @@ top:0;
   padding:0;
 
 }
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  height: 100px;
+  padding: 5px;
+  font: 12px sans-serif;
+  background: #e8e8e8;
+  border: 0px;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  color: #424242;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.bubble{
+  cursor:pointer;
+}

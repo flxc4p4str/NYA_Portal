@@ -78,6 +78,14 @@ export class ABSFunctions {
         return (x < 0 || x > 9 ? "" : "0") + x
     }
 
+isEven(n) {
+   return n % 2 == 0;
+}
+
+isOdd(n) {
+   return Math.abs(n % 2) == 1;
+}
+
     // ------------------------------------------------------------------
     // isDate ( date_string, format_string )
     // Returns true if date string matches format of format string and

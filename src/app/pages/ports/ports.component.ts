@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../data.service';
+import { GlobalState } from '../../global.state';
 import * as d3 from 'd3';
 import { ABSFunctions } from '../../abs.functions';
 
@@ -32,6 +33,7 @@ export class PortsComponent implements OnInit {
   private gX: any;
   private gY: any;
   private selectedItem;
+
   private view: any;
   private g: any;
   private group: any;
@@ -40,7 +42,11 @@ export class PortsComponent implements OnInit {
   PWs: any[];
   errorMessage: any;
 
-  constructor(private absFunctions: ABSFunctions, private _dataService: DataService) {
+  constructor(private absFunctions: ABSFunctions, private _dataService: DataService,
+  private _state: GlobalState) {
+        this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
+      console.log('Menu Collapsed',isCollapsed);
+    });
   }
   ngOnInit() {
 
@@ -92,12 +98,8 @@ export class PortsComponent implements OnInit {
     this.margin = { top: 30, right: 100, bottom: 60, left: 70 };
     this.width = containerWidth - this.margin.left - this.margin.right;
     let windowAR = window.screen.height / window.screen.width;
-    let defaultHeight = (this.width * windowAR) - this.margin.top - this.margin.bottom;
-    let portListHeight = 0;
-    if (this.portListContainer) {
-      portListHeight = this.portListContainer.nativeElement.offsetHeight;
-    }
-    this.height = (portListHeight > defaultHeight) ? portListHeight : defaultHeight;
+
+    this.height = (this.width * windowAR) - this.margin.top - this.margin.bottom;
     d3.select("svg").remove();
 
     this.svg = d3.select("#chart")
@@ -155,6 +157,11 @@ export class PortsComponent implements OnInit {
     this.color = d3.scaleOrdinal(d3.schemeCategory10);
     // this.color = d3.scaleCategory20();
     // this.color = d3.scaleCategory20().domain([0, this.data.length]).range(<any[]>['#d95f02', '#7570b3', '#d95f02', '#7570b3', '#d95f02', '#7570b3']);
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
 
     let vendCodes = {}, output = [], l = this.data.length, i, j;
     j = 0;
@@ -279,34 +286,55 @@ export class PortsComponent implements OnInit {
           d.yaa = d.yaa + d.ya;
           d3.select(this).classed("drag-active", false);
         }) // this.dragended))
-      )
-
-    this.group
-      .append("circle")
+      ).append("circle")
       .attr("r", function (d) { return that.radius(d.r); })
       .style("fill", function (d) {
         return that.color(d["vendCode2"]);
       })
-      .on("mouseover", function (d) {
-        // console.log(d3.event);
-        let custCode = d["custCode"] ? " " + d["custCode"] : " (Stock)";
-        d3.selectAll(".mytt")
-          .html("<div>PO:" + d["poOrderNo"] + custCode + "<br/><br/>"
+       .on("mouseover", function(d) {
+         let custCode = d["custCode"] ? " " + d["custCode"] : " (Stock)";
+       div.transition()
+         .duration(200)
+         .style("opacity", .9);
+       div.html("<div>PO:" + d["poOrderNo"] + custCode + "<br/><br/>"
           + "<span style='text-align:left;'>Supplier:</span>"
           + "<span style='text-align:right;'>" + d["vendCode"] + "</span>" + "<br/>"
           + "Cartons: " + d["poCtnsOpn"] + "<br/>"
           + "ETD: " + that.absFunctions.formatDate(d["poDateShipBy"], "MM/dd/yyyy") + "<br/>"
           + "Units: " + d["poQtyOpn"] + "</div>")
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY - 120) + "px")
-          .transition().duration(200)
-          .style("opacity", .9);
-      })
-      .on("mouseout", function (d) {
-        d3.selectAll(".mytt")
-          .transition().duration(500)
-          .style("opacity", 0);
-      })
+         .style("left", (d3.event.pageX + 10) + "px")
+         .style("top", (d3.event.pageY - 28) + "px");
+       })
+     .on("mouseout", function(d) {
+       div.transition()
+         .duration(500)
+         .style("opacity", 0);
+       });
+
+    // this.group
+      // .append("circle")
+      // .attr("r", function (d) { return that.radius(d.r); })
+      // .style("fill", function (d) {
+      //   return that.color(d["vendCode2"]);
+      // })
+    //   .on("mouseover", function (d) {
+    //     // console.log(d3.event);
+        
+    //     d3.selectAll(".mytt")
+    //       .html()
+    //       .style("left", (d3.event.pageX) + "px")
+    //       .style("top", (d3.event.pageY - 28) + "px")
+    //       .transition().duration(200)
+    //       .style("opacity", .9);
+    //   })
+    //   .on("mouseout", function (d) {
+    //     d3.selectAll(".mytt")
+    //       .transition().duration(500)
+    //       .style("opacity", 0);
+    //   })
+
+  
+
 
     this.group
       .append("text")
@@ -384,10 +412,9 @@ export class PortsComponent implements OnInit {
   }
 
   listClick(event, newValue) {
-    // console.log(newValue);
-    if (this.selectedItem === newValue) {
-      this.selectedItem = {};
-    } else {
+      //   d3.selectAll(".li-slideout")
+      // .style("height", 0);
+    if (this.selectedItem != newValue) {
       this.selectedItem = newValue;
       this.drawChart();
     }
@@ -396,13 +423,26 @@ export class PortsComponent implements OnInit {
   displayVendors(vendors, vColors) {
     for (let V of vendors) {
       V.keyColor = vColors(V.vendCode);
+      V.toolTip = 'Cartons: ' + V.poCtnsOpn;
       for (let PW of this.PWs) {
-        PW.portVendors = [];
+        // PW.portVendors = [];
         if (PW.portCodeOrig === V.portCodeOrig && PW.whseCode === V.whseCode) {
           PW.portVendors = vendors;
+          let vc = vendors.length;
+
+          let slideoutHeight = ((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 44;
+          PW.slideoutHeight = slideoutHeight + 'px';
+        } else {
+          PW.slideoutHeight = '0px';
         }
       }
     }
+    let  vlHeight = $(window).height() - (100 + $('.page-top').outerHeight() 
+      + $('.port-list-panel .card-header').outerHeight()
+      + $('.li-hr').outerHeight());
+    d3.selectAll(".list-scroller")
+      .style("max-height", vlHeight + 'px')
+      .style("overflow-y", 'auto');
   }
 
   vlMouseOver(pv) {
