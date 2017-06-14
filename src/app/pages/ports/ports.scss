@@ -69,6 +69,7 @@ overflow: hidden;
 .li-slideout-open{
   border-top: 1px solid #424242;
   border-bottom: 1px solid #424242;
+  padding: 5px 10px;
 }
 .li-vendor{
   width:50%;
@@ -79,6 +80,7 @@ overflow: hidden;
     color: #424242;
     line-height: 12px;
     font-size: 12px;
+    cursor:pointer;
 }
 .li-vendor.even{
   background-color: #ddd;

@@ -445,7 +445,10 @@ resizeChart(menuCollapsed){
           PW.portVendors = vendors;
           let vc = vendors.length;
 
-          let slideoutHeight = ((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 25;
+          let slideoutHeight = (((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 25) + 10;
+          if (slideoutHeight < 40){
+            slideoutHeight = 40;
+          }
           PW.slideoutHeight = slideoutHeight + 'px';
         } else {
           PW.slideoutHeight = '0px';
