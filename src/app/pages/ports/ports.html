@@ -37,8 +37,18 @@
 <div id="ChartContainer" #chartContainer >
   <ba-card baCardClass="ports-chart">
     <div id="chart"></div>
+    <div class="svgExport" (click)="download_png()" title="Export to PNG"><i class="material-icons">photo_camera</i></div>
   </ba-card>
 </div>
+
+    
+
+    <!--
+      this is used to download content dynamically from the client side. Note
+      that this div is, by default, not visible with the styling above.
+    -->
+    <div id="crowbar-workspace">
+    </div>
 
 
 <!--

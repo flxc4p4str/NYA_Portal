@@ -3,6 +3,7 @@ import { DataService } from '../../data.service';
 import { GlobalState } from '../../global.state';
 import * as d3 from 'd3';
 import { ABSFunctions } from '../../abs.functions';
+import { BaThemePreloader, BaThemeSpinner } from '../../theme/services';
 
 @Component({
   selector: 'nga-ports',
@@ -42,49 +43,74 @@ export class PortsComponent implements OnInit {
   PWs: any[];
   errorMessage: any;
 
-  constructor(private absFunctions: ABSFunctions, private _dataService: DataService,
-  private _state: GlobalState) {
-        this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
+  constructor(private absFunctions: ABSFunctions, private _dataService: DataService, private _spinner: BaThemeSpinner,
+    private _state: GlobalState) {
+    this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
       // console.log('Menu Collapsed',isCollapsed);
       this.resizeChart(isCollapsed);
     });
   }
   ngOnInit() {
+this._spinner.show();
 
-    this._dataService.getOpenPOsByPort()
-      .subscribe(
-      x => {
-        if (x) {
-          this.POTORDR1s = x.potordr1s; // x.slice(x.length-30); // data.json();
-          this.PWs = x.potordr1PortWhses;
-
-          if (this.PWs.length) {
-            this.PWs.sort(function (a, b) {
-              if (a.portCodeOrig + a.whseCode < b.portCodeOrig + b.whseCode) { return -1; }
-              if (a.portCodeOrig + a.whseCode > b.portCodeOrig + b.whseCode) { return 1; }
-              return 0;
-            });
-
-            this.selectedItem = this.PWs[10];
-            this.drawChart();
-          } else {
-            this.selectedItem = null;
-          }
-        } else {
-          // this.POTORDR1s = null; // this.BSTCBSCM_empty;
-          this.data = null; // this.BSTCBSCM_empty;
-        }
-      },
-      error => this.errorMessage = <any>error);
 
     // if (this.data) {
     //   this.drawChart();
     // }
+
+    // d3.select(".svgExport").on("click", download_png);
+
+BaThemePreloader.registerLoader(this._loadData());
+
+  }
+  private _loadData(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._dataService.getOpenPOsByPort()
+        .subscribe(
+        x => {
+          if (x) {
+            this.POTORDR1s = x.potordr1s; // x.slice(x.length-30); // data.json();
+            this.PWs = x.potordr1PortWhses;
+
+            if (this.PWs.length) {
+              this.PWs.sort(function (a, b) {
+                if (a.portCodeOrig + a.whseCode < b.portCodeOrig + b.whseCode) { return -1; }
+                if (a.portCodeOrig + a.whseCode > b.portCodeOrig + b.whseCode) { return 1; }
+                return 0;
+              });
+
+              this.selectedItem = this.PWs[10];
+              this.drawChart();
+            } else {
+              this.selectedItem = null;
+            }
+          } else {
+            // this.POTORDR1s = null; // this.BSTCBSCM_empty;
+            this.data = null; // this.BSTCBSCM_empty;
+          }
+        },
+        error => this.errorMessage = <any>error);
+    });
   }
 
-  buildPortVendorList() {
+  download_png() {
 
+    // this is a shitty hack that should probably be embedded in the
+    // svg_crowbar function
+    var svg_el = d3.select("svg")
+      .attr("version", 1.1)
+      .attr("xmlns", "http://www.w3.org/2000/svg");
+
+    // this is the main thing that does the work
+    this.svg_crowbar(d3.select("#chart").node().children[0], {
+      filename: "ports.png",
+      width: this.width,
+      height: this.height,
+      crowbar_el: d3.select("#crowbar-workspace").node(),
+    })
   }
+
+
   drawChart() {
 
     this.data = this.POTORDR1s.filter(d => d.portCodeOrig == this.selectedItem.portCodeOrig && d.whseCode == this.selectedItem.whseCode);
@@ -102,12 +128,12 @@ export class PortsComponent implements OnInit {
 
     this.height = (this.width * windowAR) - this.margin.top - this.margin.bottom;
     d3.select("svg").remove();
-let cHeight = this.height + this.margin.top + this.margin.bottom;
-let cWidth = this.width + this.margin.left + this.margin.right;
+    let cHeight = this.height + this.margin.top + this.margin.bottom;
+    let cWidth = this.width + this.margin.left + this.margin.right;
     this.svg = d3.select("#chart")
       .append("svg")
       .attr("width", "100%")
-      .attr("height", cHeight )
+      .attr("height", cHeight)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .attr("viewBox", "0 0 " + cWidth + " " + cHeight)
       .append("g")
@@ -162,9 +188,9 @@ let cWidth = this.width + this.margin.left + this.margin.right;
     // this.color = d3.scaleCategory20();
     // this.color = d3.scaleCategory20().domain([0, this.data.length]).range(<any[]>['#d95f02', '#7570b3', '#d95f02', '#7570b3', '#d95f02', '#7570b3']);
 
-var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+    var div = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
 
     let vendCodes = {}, output = [], l = this.data.length, i, j;
@@ -295,35 +321,35 @@ var div = d3.select("body").append("div")
       .style("fill", function (d) {
         return that.color(d["vendCode2"]);
       })
-       .on("mouseover", function(d) {
-         let custCode = d["custCode"] ? " " + d["custCode"] : " (Stock)";
-       div.transition()
-         .duration(200)
-         .style("opacity", .9);
-       div.html("<div>PO:" + d["poOrderNo"] + custCode + "<br/><br/>"
+      .on("mouseover", function (d) {
+        let custCode = d["custCode"] ? " " + d["custCode"] : " (Stock)";
+        div.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div.html("<div>PO:" + d["poOrderNo"] + custCode + "<br/><br/>"
           + "<span style='text-align:left;'>Supplier:</span>"
           + "<span style='text-align:right;'>" + d["vendCode"] + "</span>" + "<br/>"
           + "Cartons: " + d["poCtnsOpn"] + "<br/>"
           + "ETD: " + that.absFunctions.formatDate(d["poDateShipBy"], "MM/dd/yyyy") + "<br/>"
           + "Units: " + d["poQtyOpn"] + "</div>")
-         .style("left", (d3.event.pageX + 10) + "px")
-         .style("top", (d3.event.pageY - 28) + "px");
-       })
-     .on("mouseout", function(d) {
-       div.transition()
-         .duration(500)
-         .style("opacity", 0);
-       });
+          .style("left", (d3.event.pageX + 10) + "px")
+          .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function (d) {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
 
     // this.group
-      // .append("circle")
-      // .attr("r", function (d) { return that.radius(d.r); })
-      // .style("fill", function (d) {
-      //   return that.color(d["vendCode2"]);
-      // })
+    // .append("circle")
+    // .attr("r", function (d) { return that.radius(d.r); })
+    // .style("fill", function (d) {
+    //   return that.color(d["vendCode2"]);
+    // })
     //   .on("mouseover", function (d) {
     //     // console.log(d3.event);
-        
+
     //     d3.selectAll(".mytt")
     //       .html()
     //       .style("left", (d3.event.pageX) + "px")
@@ -337,7 +363,7 @@ var div = d3.select("body").append("div")
     //       .style("opacity", 0);
     //   })
 
-  
+
 
 
     this.group
@@ -410,31 +436,33 @@ var div = d3.select("body").append("div")
         .duration(750)
         .call(that.zoom.transform, d3.zoomIdentity);
     }
-
+this._spinner.hide();
     // d3.select("button")
     //   .on("click", resetted);
   }
 
   listClick(event, newValue) {
-      //   d3.selectAll(".li-slideout")
-      // .style("height", 0);
+    //   d3.selectAll(".li-slideout")
+    // .style("height", 0);
     if (this.selectedItem != newValue) {
       this.selectedItem = newValue;
       this.drawChart();
     }
   }
-resizeChart(menuCollapsed){
-  var svg = d3.select("svg");
-  if(svg){
-  let deltaW = (menuCollapsed)?250:-250;
-  let chartWidth = $('svg').width();
-  let chartHeight = $('svg').height();
-  let newH = ((chartWidth + deltaW) * chartHeight)/chartWidth;
-  svg.attr("height",newH);
+  resizeChart(menuCollapsed) {
+    var svg = d3.select("svg");
+    if (svg) {
+      let deltaW = (menuCollapsed) ? 250 : -250;
+      let chartWidth = $('svg').width();
+      let chartHeight = $('svg').height();
+      let newH = ((chartWidth + deltaW) * chartHeight) / chartWidth;
+      svg.transition()
+        .duration(500)
+        .attr("height", newH);
+    }
+
+
   }
-
-
-}
   displayVendors(vendors, vColors) {
     for (let V of vendors) {
       V.keyColor = vColors(V.vendCode);
@@ -446,7 +474,7 @@ resizeChart(menuCollapsed){
           let vc = vendors.length;
 
           let slideoutHeight = (((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 25) + 10;
-          if (slideoutHeight < 40){
+          if (slideoutHeight < 40) {
             slideoutHeight = 40;
           }
           PW.slideoutHeight = slideoutHeight + 'px';
@@ -455,7 +483,7 @@ resizeChart(menuCollapsed){
         }
       }
     }
-    let  vlHeight = $(window).height() - (100 + $('.page-top').outerHeight() 
+    let vlHeight = $(window).height() - (100 + $('.page-top').outerHeight()
       + $('.port-list-panel .card-header').outerHeight()
       + $('.li-hr').outerHeight());
     d3.selectAll(".list-scroller")
@@ -482,6 +510,118 @@ resizeChart(menuCollapsed){
       .style("opacity", 1);
     d3.selectAll(".bubble")
       .style("opacity", 1);
+  }
+
+  svg_crowbar(svg_el, options) {
+
+    // TODO: should probably do some checking to make sure that svg_el is
+    // actually a <svg> and throw a friendly error otherwise
+
+    // get options passed to svg_crowbar
+    var filename = options.filename || "download.png";
+    var width = options.width; // TODO: add fallback value based on svg attributes
+    var height = options.height; // TODO: add fallback value based on svg attributes
+    var crowbar_el = options.crowbar_el; // TODO: element for preparing the canvas element
+
+    // apply the stylesheet to the svg to be sure to capture all of the stylings
+    //applyStylesheets(svg_el)
+
+    // grab the html from the svg and encode the svg in a data url
+    // var html = svg_el.outerHTML;
+    var html = svg_el.outerHTML;
+    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+
+    // create a canvas element that has the right dimensions
+    crowbar_el.innerHTML = (
+      '<canvas width="' + width + '" height="' + height + '"></canvas>'
+    )
+    var canvas = crowbar_el.querySelector("canvas");
+    var context = canvas.getContext("2d");
+    var image = new Image;
+    image.src = imgsrc;
+    image.onload = function () {
+      $("#crowbar-workspace").empty();
+      // draw the image in the context of the canvas and then get the
+      // image data from the canvas
+      //
+      // TODO: the resulting canvas image is a little on the grainy side.
+      // up until this point the image is lossless, so it definitely has
+      // something to do with the imgsrc getting lost when embedding in
+      // the canvas. this appears to be a problem with just about
+      // anything i've seen
+      context.drawImage(image, 0, 0);
+      var canvasdata = canvas.toDataURL("image/png");
+
+      // download the data
+      var a = document.createElement("a");
+      a.download = filename;
+      a.href = canvasdata;
+      a.click();
+    };
+
+
+    // this is adapted (barely) from svg-crowbar
+    // https://github.com/NYTimes/svg-crowbar/blob/gh-pages/svg-crowbar-2.js#L211-L250
+    function applyStylesheets(svgEl) {
+
+      // use an empty svg to compute the browser applied stylesheets
+      var emptySvg = window.document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+      window.document.body.appendChild(emptySvg);
+      var emptySvgDeclarationComputed = getComputedStyle(emptySvg);
+      emptySvg.parentNode.removeChild(emptySvg);
+
+      // traverse the element tree and explicitly set all stylesheet values
+      // on an element. this is ripped from svg-crowbar
+      var allElements = traverse(svgEl);
+      var i = allElements.length;
+      while (i--) {
+        explicitlySetStyle(allElements[i], emptySvgDeclarationComputed);
+      }
+    }
+
+
+    function explicitlySetStyle(element, emptySvgDeclarationComputed) {
+      var cSSStyleDeclarationComputed = getComputedStyle(element);
+      var i, len, key, value;
+      var computedStyleStr = "";
+      for (i = 0, len = cSSStyleDeclarationComputed.length; i < len; i++) {
+        key = cSSStyleDeclarationComputed[i];
+        value = cSSStyleDeclarationComputed.getPropertyValue(key);
+        if (value !== emptySvgDeclarationComputed.getPropertyValue(key)) {
+          computedStyleStr += key + ":" + value + ";";
+        }
+      }
+      element.setAttribute('style', computedStyleStr);
+    }
+
+
+    // traverse an svg and append all of the elements to the tree array. This
+    // ignores some elements that can appear in <svg> elements but whose
+    // children's styles should not be tweaked
+    function traverse(obj) {
+      var tree = [];
+      var ignoreElements = {
+        'script': undefined,
+        'defs': undefined,
+      };
+      tree.push(obj);
+      visit(obj);
+      function visit(node) {
+        if (node && node.hasChildNodes() && !(node.nodeName.toLowerCase() in ignoreElements)) {
+          var child = node.firstChild;
+          while (child) {
+            if (child.nodeType === 1) {
+              tree.push(child);
+              visit(child);
+            }
+            child = child.nextSibling;
+          }
+        }
+      }
+      return tree;
+    }
+
+
   }
 
 }

@@ -15,7 +15,20 @@
   flex-grow: 1;
   margin-left: 3vh;
 }
-
+#crowbar-workspace{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index: 0;
+}
+.svgExport{
+  position: absolute;
+  font-size: 16px;
+  color: #ef7b38;
+  top:5px;
+  right:5px;
+  cursor:pointer;
+}
 
 .li-tr{
   width:100%;
