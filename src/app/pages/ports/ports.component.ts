@@ -45,7 +45,8 @@ export class PortsComponent implements OnInit {
   constructor(private absFunctions: ABSFunctions, private _dataService: DataService,
   private _state: GlobalState) {
         this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
-      console.log('Menu Collapsed',isCollapsed);
+      // console.log('Menu Collapsed',isCollapsed);
+      this.resizeChart(isCollapsed);
     });
   }
   ngOnInit() {
@@ -101,11 +102,14 @@ export class PortsComponent implements OnInit {
 
     this.height = (this.width * windowAR) - this.margin.top - this.margin.bottom;
     d3.select("svg").remove();
-
+let cHeight = this.height + this.margin.top + this.margin.bottom;
+let cWidth = this.width + this.margin.left + this.margin.right;
     this.svg = d3.select("#chart")
       .append("svg")
-      .attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .attr("width", "100%")
+      .attr("height", cHeight )
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .attr("viewBox", "0 0 " + cWidth + " " + cHeight)
       .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
     //  .call(this.zoom);
@@ -419,7 +423,18 @@ var div = d3.select("body").append("div")
       this.drawChart();
     }
   }
+resizeChart(menuCollapsed){
+  var svg = d3.select("svg");
+  if(svg){
+  let deltaW = (menuCollapsed)?250:-250;
+  let chartWidth = $('svg').width();
+  let chartHeight = $('svg').height();
+  let newH = ((chartWidth + deltaW) * chartHeight)/chartWidth;
+  svg.attr("height",newH);
+  }
 
+
+}
   displayVendors(vendors, vColors) {
     for (let V of vendors) {
       V.keyColor = vColors(V.vendCode);
@@ -430,7 +445,7 @@ var div = d3.select("body").append("div")
           PW.portVendors = vendors;
           let vc = vendors.length;
 
-          let slideoutHeight = ((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 44;
+          let slideoutHeight = ((this.absFunctions.isEven(vc) ? vc : vc + 1) / 2) * 25;
           PW.slideoutHeight = slideoutHeight + 'px';
         } else {
           PW.slideoutHeight = '0px';
@@ -442,7 +457,8 @@ var div = d3.select("body").append("div")
       + $('.li-hr').outerHeight());
     d3.selectAll(".list-scroller")
       .style("max-height", vlHeight + 'px')
-      .style("overflow-y", 'auto');
+      .style("overflow-y", 'auto')
+      .style("overflow-x", 'hidden');
   }
 
   vlMouseOver(pv) {

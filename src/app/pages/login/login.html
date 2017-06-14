@@ -46,7 +46,7 @@
     </div>
     <div class="login-form-container">
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+      <form [formGroup]="form" (keydown)="keyDownFunction($event, form.value)" (ngSubmit)="onSubmit(form.value)">
         <div class="group" [ngClass]="{'has-error': (!username.valid && username.touched), 'has-success': (username.valid && username.touched)}">
           <input [formControl]="username" id="username" type="text" name="username" type="text" required>
           <span class="highlight"></span>

@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   submitted: boolean = false;
   submitting: boolean = false;
 
-    constructor(fb: FormBuilder, private http: Http, private router: Router
+  constructor(fb: FormBuilder, private http: Http, private router: Router
     , private _userService: UserService) {
     this.form = fb.group({
       'username': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
@@ -34,14 +34,21 @@ export class LoginComponent implements OnInit {
     this.form.patchValue({ password: '0ff1c3RDW' });
     this.onSubmit(this.form.value);
   }
-
+  keyDownFunction(event, values: Object) {
+    if (event.keyCode == 13) {
+      this.onSubmit(values);
+      // rest of your code
+    }
+  }
   onSubmit(values: Object): void {
     this.submitting = true;
     if (this.form.valid) {
-const bo = { un: encodeURI(values['username']), 
-pw: encodeURI(values['password']),
-scope: encodeURI(values['absdeveloper']) };
-     
+      const bo = {
+        un: encodeURI(values['username']),
+        pw: encodeURI(values['password']),
+        scope: encodeURI(values['absdeveloper'])
+      };
+
       const dataForBody = "grant_type=password&" +
         "username=" + encodeURI(values["username"]) + "&" +
         "password=" + encodeURI(values["password"]) + "&" +
@@ -52,33 +59,33 @@ scope: encodeURI(values['absdeveloper']) };
       messageHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
       messageHeaders.append('Authorization', 'Basic ' + encodedClientIdAndSecret)
 
-          this.saveToken('fake_token');
-          this.submitted = true;
+      this.saveToken('fake_token');
+      this.submitted = true;
 
 
-/*      this.http.post(authGlobals.tokenEndpoint, dataForBody, {
-        headers: messageHeaders,
-      })
-        .map(res => res.json())
-        .subscribe(
-        (data) => {
-          this.saveToken(data.access_token);
-          this.submitted = true;
-        },
-        );*/
+      /*      this.http.post(authGlobals.tokenEndpoint, dataForBody, {
+              headers: messageHeaders,
+            })
+              .map(res => res.json())
+              .subscribe(
+              (data) => {
+                this.saveToken(data.access_token);
+                this.submitted = true;
+              },
+              );*/
     }
   }
-    ngOnInit() {
-      localStorage.clear();
+  ngOnInit() {
+    localStorage.clear();
     this.submitting = false;
-  }  
-saveToken(token) {
+  }
+  saveToken(token) {
     localStorage['user_name'] = this.username.value;
     localStorage['access_token'] = token;
     this._userService.getUserInstance(this.username.value).subscribe(result => {
-      console.info('Authentication Success','Welcome back ' + result.userAccount.userName);
+      console.info('Authentication Success', 'Welcome back ' + result.userAccount.userName);
 
       this.router.navigate(['pages/purchaseOrders', {}]);
     });
-  }  
+  }
 }
