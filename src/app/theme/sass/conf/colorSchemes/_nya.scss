@@ -447,3 +447,15 @@ div.tooltip {
 .ui-datatable .ui-datatable-data tr td {
     padding: .325em .5em;
 }
+
+#componentSpinner{
+  position: absolute;
+  top:85px;
+  right:0;
+  left:10px;
+  bottom:10px;
+  background: #F0F3F4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

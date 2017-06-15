@@ -51,7 +51,7 @@ export class PortsComponent implements OnInit {
     });
   }
   ngOnInit() {
-this._spinner.show();
+    this._spinner.show();
 
 
     // if (this.data) {
@@ -60,7 +60,7 @@ this._spinner.show();
 
     // d3.select(".svgExport").on("click", download_png);
 
-BaThemePreloader.registerLoader(this._loadData());
+    BaThemePreloader.registerLoader(this._loadData());
 
   }
   private _loadData(): Promise<any> {
@@ -104,10 +104,12 @@ BaThemePreloader.registerLoader(this._loadData());
     // this is the main thing that does the work
     this.svg_crowbar(d3.select("#chart").node().children[0], {
       filename: "ports.png",
-      width: this.width,
-      height: this.height,
+      width: $('#chart').width(),
+      height: $('#chart').height(),
       crowbar_el: d3.select("#crowbar-workspace").node(),
-    })
+      bgColor: '#F0F3F4',
+      header: false,
+    });
   }
 
 
@@ -436,7 +438,7 @@ BaThemePreloader.registerLoader(this._loadData());
         .duration(750)
         .call(that.zoom.transform, d3.zoomIdentity);
     }
-this._spinner.hide();
+    this._spinner.hide();
     // d3.select("button")
     //   .on("click", resetted);
   }
@@ -517,48 +519,73 @@ this._spinner.hide();
     // TODO: should probably do some checking to make sure that svg_el is
     // actually a <svg> and throw a friendly error otherwise
 
-    // get options passed to svg_crowbar
+    var html = svg_el.outerHTML;
     var filename = options.filename || "download.png";
     var width = options.width; // TODO: add fallback value based on svg attributes
     var height = options.height; // TODO: add fallback value based on svg attributes
     var crowbar_el = options.crowbar_el; // TODO: element for preparing the canvas element
+    var backgroundColor = options.bgColor;
+    var addWatermark = false;
+    var exportHeader = options.header;
+    var compositeData;
+    var headerHeight = (exportHeader) ? 102 : 0;
+    var nyaLogo = this.absFunctions.uriImages().nyaLogoTrans;
+    var chartImage = 'data:image/svg+xml;base64,' + btoa(html);
 
     // apply the stylesheet to the svg to be sure to capture all of the stylings
-    //applyStylesheets(svg_el)
+    applyStylesheets(svg_el);
 
     // grab the html from the svg and encode the svg in a data url
     // var html = svg_el.outerHTML;
-    var html = svg_el.outerHTML;
-    var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+
+
 
     // create a canvas element that has the right dimensions
     crowbar_el.innerHTML = (
-      '<canvas width="' + width + '" height="' + height + '"></canvas>'
+      '<canvas width="' + width + '" height="' + (height + 102) + '"></canvas>'
     )
     var canvas = crowbar_el.querySelector("canvas");
     var context = canvas.getContext("2d");
-    var image = new Image;
-    image.src = imgsrc;
-    image.onload = function () {
-      $("#crowbar-workspace").empty();
-      // draw the image in the context of the canvas and then get the
-      // image data from the canvas
-      //
-      // TODO: the resulting canvas image is a little on the grainy side.
-      // up until this point the image is lossless, so it definitely has
-      // something to do with the imgsrc getting lost when embedding in
-      // the canvas. this appears to be a problem with just about
-      // anything i've seen
-      context.drawImage(image, 0, 0);
-      var canvasdata = canvas.toDataURL("image/png");
+    context.fillStyle = "#FFFFFF";
+    context.fillRect(0, headerHeight, width, (height + 102));
+    context.fillStyle = '#F0F3F4';
+    context.fillRect(0, 0, width, 102);
 
-      // download the data
+
+    var sources = {
+      nyaLogo: nyaLogo,
+      chartImage: chartImage,
+    };
+
+    loadImages(sources, function (images) {
+      context.drawImage(images.nyaLogo, 5, 5, 221, 92);
+      context.drawImage(images.chartImage, 0, 102);
+      var canvasdata = canvas.toDataURL("image/png");
       var a = document.createElement("a");
       a.download = filename;
       a.href = canvasdata;
       a.click();
-    };
+      $("#crowbar-workspace").empty();
+    });
 
+    function loadImages(sources, callback) {
+      var images = {};
+      var loadedImages = 0;
+      var numImages = 0;
+      // get num of sources
+      for (var src in sources) {
+        numImages++;
+      }
+      for (var src in sources) {
+        images[src] = new Image();
+        images[src].onload = function () {
+          if (++loadedImages >= numImages) {
+            callback(images);
+          }
+        };
+        images[src].src = sources[src];
+      }
+    }
 
     // this is adapted (barely) from svg-crowbar
     // https://github.com/NYTimes/svg-crowbar/blob/gh-pages/svg-crowbar-2.js#L211-L250

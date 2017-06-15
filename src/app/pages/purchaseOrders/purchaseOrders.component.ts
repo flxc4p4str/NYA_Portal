@@ -27,39 +27,40 @@ export class PurchaseOrdersComponent implements OnInit {
   }
 
   ngOnInit() {
-this._spinner.show();
-BaThemePreloader.registerLoader(this._loadData());
+
+    this._spinner.show({ 'top': '85px', 'background': '#F0F3F4', 'display': 'flex' });
+    BaThemePreloader.registerLoader(this._loadData());
   }
 
-    private _loadData(): Promise<any> {
+  private _loadData(): Promise<any> {
     return new Promise((resolve, reject) => {
-    this._dataService.getOpenPOs()
-      .subscribe(
-      x => {
-        if (x) {
+      this._dataService.getOpenPOs()
+        .subscribe(
+        x => {
+          if (x) {
 
-          for (let po of x) {
-            po.poDateShipByMin_f = this.absFunctions.formatDate(po.poDateShipByMin, "MM/dd/yyyy");
-            po.poDateEta_f = this.absFunctions.formatDate(po.poDateEta, "MM/dd/yyyy");
+            for (let po of x) {
+              po.poDateShipByMin_f = this.absFunctions.formatDate(po.poDateShipByMin, "MM/dd/yyyy");
+              po.poDateEta_f = this.absFunctions.formatDate(po.poDateEta, "MM/dd/yyyy");
+            }
+            this.POTORDR1s = x;
+            this._spinner.hide();
+
+            this.totalRecords = x.length;
+            this.POTORDR1s_ds = x;
+            //this.POTORDR1s = x.slice(0, 10);
+
+          } else {
+            this.POTORDR1s_ds = null;
+            this.POTORDR1s = null; // this.BSTCBSCM_empty;
           }
-          this.POTORDR1s = x;
-          this._spinner.hide();
-
-          this.totalRecords = x.length;
-          this.POTORDR1s_ds = x;
-          //this.POTORDR1s = x.slice(0, 10);
-          
-        } else {
-          this.POTORDR1s_ds = null;
-          this.POTORDR1s = null; // this.BSTCBSCM_empty;
-        }
-      },
-      error => this.errorMessage = <any>error);
+        },
+        error => this.errorMessage = <any>error);
     });
   }
-viewPDF(po){
-  alert('Show PDF');
-}
+  viewPDF(po) {
+    alert('Show PDF');
+  }
   showPODetails(PO) {
     this._dataService.getPO(PO)
       .subscribe(
