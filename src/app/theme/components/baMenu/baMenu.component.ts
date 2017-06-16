@@ -26,6 +26,7 @@ export class BaMenu {
   public outOfArea: number = -200;
 
   constructor(private _router: Router, private _service: BaMenuService, private _state: GlobalState) {
+
   }
 
   public updateMenu(newMenuItems) {

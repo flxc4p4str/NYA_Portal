@@ -6,6 +6,8 @@ import { BaImageLoaderService, BaThemePreloader, BaThemeSpinner } from './theme/
 import { BaThemeConfig } from './theme/theme.config';
 import { layoutPaths } from './theme/theme.constants';
 
+
+
 /*
  * App Component
  * Top Level Component
@@ -15,7 +17,9 @@ import { layoutPaths } from './theme/theme.constants';
   styleUrls: ['./app.component.scss'],
   template: `
     <main [class.menu-collapsed]="isMenuCollapsed" baThemeRun>
-      <div class="additional-bg"></div>
+      <div id="crowbar-workspace"></div>
+      <div class="additional-bg"></div>      
+      <ng2-toasty ></ng2-toasty>
       <router-outlet></router-outlet>
     </main>
   `

@@ -60,13 +60,14 @@
           <label>Password</label>
         </div>
         <div class="submit-btn-container">
+          <div class="auth-msg">{{authMsg}}</div>
           <div *ngIf="submitting" class="submit-btn-loader">
             <svg class="spinner" width="29px" height="29px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
    <circle class="path" fill="none" stroke-width="3" stroke-linecap="round" cx="15" cy="15" r="13"></circle>
 </svg>
             </div>
           <div  *ngIf="!submitting"  class="submit-btn">
-            <button type="button" id="absSignInBtn"  data-loading="true" class="btn btn-primary btn-auth" (click)="onSubmit(form.value)">Sign in</button>
+            <button type="button" id="absSignInBtn"  data-loading="true" class="btn btn-primary ds-1 btn-auth" (click)="onSubmit(form.value)">Sign in</button>
           </div>
         </div>
       </form>

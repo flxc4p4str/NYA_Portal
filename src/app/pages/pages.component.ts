@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
+import { UserService } from '../user.service';
 
 // to add breadcrumb
 //         <ba-content-top></ba-content-top>
@@ -25,12 +26,41 @@ import { PAGES_MENU } from './pages.menu';
     <ba-back-top position="200"></ba-back-top>
     `
 })
-export class Pages {
-
-  constructor(private _menuService: BaMenuService) {
+export class Pages implements OnInit {
+  menu: any[];
+  constructor(private _menuService: BaMenuService, private _userService: UserService) {
   }
 
   ngOnInit() {
-    this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
+    this.buildMenu();
+
+  }
+
+  buildMenu() {
+    this.menu = PAGES_MENU;
+    this._userService.myUserObject().subscribe(result => {
+      const userMenu = result.userMenu.sort(function (a, b) { return a.menuItemSeq - b.menuItemSeq; });
+      let menuItemSelected = true;
+      for (const menuItem of userMenu) {
+        const umi = {
+          path: menuItem.webMenuId,
+          data: {
+            menu: {
+              title: menuItem.webMenuDesc,
+              icon: menuItem.menuItemIcon,
+              selected: menuItemSelected,
+              expanded: false,
+              order: menuItem.menuItemSeq,
+              css: menuItem.menuItemCss,
+            },
+          },
+        };
+        if (menuItemSelected) {
+          menuItemSelected = false;
+        }
+        this.menu[0]['children'].push(umi);
+      }
+      this._menuService.updateMenuByRoutes(<Routes>this.menu);
+    });
   }
 }

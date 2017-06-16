@@ -1,8 +1,11 @@
+
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../../data.service';
 import { GlobalState } from '../../global.state';
 import * as d3 from 'd3';
 import { ABSFunctions } from '../../abs.functions';
+import { ABSDataURI } from './../../abs.dataUri';
+
 import { BaThemePreloader, BaThemeSpinner } from '../../theme/services';
 
 @Component({
@@ -44,7 +47,7 @@ export class PortsComponent implements OnInit {
   errorMessage: any;
 
   constructor(private absFunctions: ABSFunctions, private _dataService: DataService, private _spinner: BaThemeSpinner,
-    private _state: GlobalState) {
+    private _state: GlobalState, private dataUri: ABSDataURI) {
     this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
       // console.log('Menu Collapsed',isCollapsed);
       this.resizeChart(isCollapsed);
@@ -396,7 +399,7 @@ export class PortsComponent implements OnInit {
     // this.legend = this.svg.selectAll(".legend")
     //   .data(this.color.domain())
     //   .enter().append("g")
-    //   .attr("class", function(d){
+    //   .attr("class", function (d) {
     //     return "legend vc-" + d;
     //   })
     //   .attr("transform", function (d, i) { return "translate(2," + i * 14 + ")"; });
@@ -529,7 +532,7 @@ export class PortsComponent implements OnInit {
     var exportHeader = options.header;
     var compositeData;
     var headerHeight = (exportHeader) ? 102 : 0;
-    var nyaLogo = this.absFunctions.uriImages().nyaLogoTrans;
+    var nyaLogo = this.dataUri.uriImages().nyaLogoTrans;
     var chartImage = 'data:image/svg+xml;base64,' + btoa(html);
 
     // apply the stylesheet to the svg to be sure to capture all of the stylings
@@ -542,24 +545,54 @@ export class PortsComponent implements OnInit {
 
     // create a canvas element that has the right dimensions
     crowbar_el.innerHTML = (
-      '<canvas width="' + width + '" height="' + (height + 102) + '"></canvas>'
+      '<canvas width="' + (width + 80) + '" height="' + (height + 102) + '"></canvas>'
     )
     var canvas = crowbar_el.querySelector("canvas");
     var context = canvas.getContext("2d");
     context.fillStyle = "#FFFFFF";
-    context.fillRect(0, headerHeight, width, (height + 102));
-    context.fillStyle = '#F0F3F4';
-    context.fillRect(0, 0, width, 102);
+    context.fillRect(0, headerHeight, width + 80, (height + 102));
 
+
+    context.fillStyle = '#F0F3F4';
+    context.fillRect(0, 0, (width + 80), 102);
+
+    context.beginPath();
+    context.lineWidth = "1";
+    context.strokeStyle = '#757575';
+    context.rect(0, 0, (width + 80) - 1, 102);
+    context.stroke();
 
     var sources = {
       nyaLogo: nyaLogo,
       chartImage: chartImage,
     };
 
-    loadImages(sources, function (images) {
+    let i = 0;
+
+    for (var pv of this.selectedItem.portVendors) {
+      let keyX = (width - 40);
+      let keyY = 142 + (i * 15);
+      context.fillStyle = pv['keyColor'];
+      context.fillRect(keyX, keyY, 10, 10);
+
+      context.fillStyle = '#000000';
+      context.textBaseline = "top";
+      context.fillText(pv['vendCode'], (keyX + 20), keyY);
+      i += 1;
+    }
+
+    this.absFunctions.loadImages(sources).then(function (images) {
       context.drawImage(images.nyaLogo, 5, 5, 221, 92);
       context.drawImage(images.chartImage, 0, 102);
+
+      context.beginPath();
+      context.lineWidth = "1";
+      context.strokeStyle = '#757575';
+      context.rect(0, 102, (width + 80) - 1, height);
+      context.stroke();
+
+
+
       var canvasdata = canvas.toDataURL("image/png");
       var a = document.createElement("a");
       a.download = filename;
@@ -567,25 +600,28 @@ export class PortsComponent implements OnInit {
       a.click();
       $("#crowbar-workspace").empty();
     });
+    // loadImages(sources, function (images) {
 
-    function loadImages(sources, callback) {
-      var images = {};
-      var loadedImages = 0;
-      var numImages = 0;
-      // get num of sources
-      for (var src in sources) {
-        numImages++;
-      }
-      for (var src in sources) {
-        images[src] = new Image();
-        images[src].onload = function () {
-          if (++loadedImages >= numImages) {
-            callback(images);
-          }
-        };
-        images[src].src = sources[src];
-      }
-    }
+    // });
+
+    // function loadImages(sources, callback) {
+    //   var images = {};
+    //   var loadedImages = 0;
+    //   var numImages = 0;
+    //   // get num of sources
+    //   for (var src in sources) {
+    //     numImages++;
+    //   }
+    //   for (var src in sources) {
+    //     images[src] = new Image();
+    //     images[src].onload = function () {
+    //       if (++loadedImages >= numImages) {
+    //         callback(images);
+    //       }
+    //     };
+    //     images[src].src = sources[src];
+    //   }
+    // }
 
     // this is adapted (barely) from svg-crowbar
     // https://github.com/NYTimes/svg-crowbar/blob/gh-pages/svg-crowbar-2.js#L211-L250

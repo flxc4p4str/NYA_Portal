@@ -23,6 +23,8 @@ import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
 
 import { DataTableModule, SharedModule, ButtonModule } from 'primeng/primeng';
+import { ToastyModule } from 'ng2-toasty';
+
 
 // Application wide providers
 const APP_PROVIDERS = [
@@ -57,6 +59,7 @@ export type StoreType = {
     ReactiveFormsModule,
     NgaModule.forRoot(),
     NgbModule.forRoot(),
+    ToastyModule.forRoot(),
     PagesModule,
     routing,
     DataTableModule,

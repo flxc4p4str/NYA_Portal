@@ -43,11 +43,18 @@
                 <p-column styleClass="col-button" [style]="{'width':'40px','text-align': 'center'}">
 
                     <ng-template let-po="rowData" pTemplate="body">
-                        <a href="http://abs.nyagportal.com/ViewPO/044042_0.PDF" target="_blank">
+                        <!--<a href="http://abs.nyagportal.com/ViewPO/044042_0.PDF" target="_blank">
                             <div class="btn-ripple view-pdf-btn">
-                                <i class="material-icons">pageview</i>
+                                <i class="material-icons">picture_as_pdf</i>
                             </div>
-                        </a>
+                        </a>-->
+
+                        <div (click)="viewPDF(po)">
+                            <div class="btn-ripple view-pdf-btn">
+                                <i class="material-icons">picture_as_pdf</i>
+                            </div>
+                        </div>
+
                     </ng-template>
                 </p-column>
 

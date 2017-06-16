@@ -394,7 +394,18 @@ $duration: 1.4s;
  }
 }
 
+.submit-btn-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-between;
+}
 .submit-btn-loader {
   float: right;
   margin-right: 20px;
+}
+
+.auth-msg{
+  color: #ef7b38;
+  font-size:24px;
 }

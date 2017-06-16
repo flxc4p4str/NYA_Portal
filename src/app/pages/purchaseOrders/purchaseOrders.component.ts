@@ -37,6 +37,7 @@ export class PurchaseOrdersComponent implements OnInit {
       this._dataService.getOpenPOs()
         .subscribe(
         x => {
+          console.log(x);
           if (x) {
 
             for (let po of x) {
@@ -59,7 +60,12 @@ export class PurchaseOrdersComponent implements OnInit {
     });
   }
   viewPDF(po) {
-    alert('Show PDF');
+    const docRequest = {
+      'documentType': 'PO',
+      'codeValue': po.poOrderNo,
+    };
+    console.log(docRequest);
+    this.absFunctions.viewDocument(docRequest);
   }
   showPODetails(PO) {
     this._dataService.getPO(PO)

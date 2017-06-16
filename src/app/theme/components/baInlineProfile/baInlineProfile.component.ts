@@ -2,12 +2,12 @@ import { Component, ElementRef, HostListener, trigger, state, transition, animat
 import { GlobalState } from '../../../global.state';
 import { UserService } from '../../../user.service';
 import { layoutSizes } from '../../../theme';
-import {Message} from 'primeng/primeng';
+import { Message } from 'primeng/primeng';
 
 @Component({
-  selector: 'nga-inline-profile',
-  templateUrl: './baInlineProfile.html',
-  styleUrls: ['./baInlineProfile.scss'],
+    selector: 'nga-inline-profile',
+    templateUrl: './baInlineProfile.html',
+    styleUrls: ['./baInlineProfile.scss'],
     animations: [
         trigger('menu', [
             state('hidden', style({
@@ -24,17 +24,26 @@ import {Message} from 'primeng/primeng';
 export class BaInlineProfile {
     active: boolean;
     displayName: string;
+    userId: string;
 
-msgs: Message[] = [];
-  constructor(private _userService: UserService) {
+    msgs: Message[] = [];
+    constructor(private _userService: UserService) {
         this._userService.myUserObject().subscribe(result => {
-        this.displayName = result.userAccount.userName;
-    });
+            this.displayName = result.userAccount.userName;
+            this.userId = result.userAccount.userId;
+        });
 
-    
-  }
+
+    }
     onClick(event) {
         this.active = !this.active;
         event.preventDefault();
+    }
+    refreshMenu() {
+        this._userService.refreshMenu().subscribe(result => {
+            // this.displayName = result.userAccount.userName;
+            // this.userId = result.userAccount.userId;
+        });
+
     }
 }
