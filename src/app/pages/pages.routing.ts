@@ -35,6 +35,7 @@ export const routes: Routes = [
       { path: 'dashboard', loadChildren: './dashboard/dashboard.module#DashboardModule' },
       { path: 'forecast', loadChildren: './forecast/forecast.module#ForecastModule' },
       { path: 'ports', loadChildren: './ports/ports.module#PortsModule' },
+      { path: 'logistics', loadChildren: './logistics/logistics.module#LogisticsModule' },
       { path: 'purchaseOrders', loadChildren: './purchaseOrders/purchaseOrders.module#PurchaseOrdersModule' },
       { path: 'ucc', loadChildren: './ucc/ucc.module#UccModule' },
     ],

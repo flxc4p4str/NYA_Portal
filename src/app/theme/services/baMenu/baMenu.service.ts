@@ -26,22 +26,22 @@ export class BaMenuService {
    *
    * @param {Routes} routes Type compatible with app.menu.ts
    */
-  public updateMenuByRoutes(routes: Routes) {
-    let convertedRoutes = this.convertRoutesToMenus(_.cloneDeep(routes));
+  updateMenuByRoutes(routes: Routes) {
+    const convertedRoutes = this.convertRoutesToMenus(_.cloneDeep(routes));
     this.menuItems.next(convertedRoutes);
   }
 
-  public convertRoutesToMenus(routes: Routes): any[] {
-    let items = this._convertArrayToItems(routes);
+  convertRoutesToMenus(routes: Routes): any[] {
+    const items = this._convertArrayToItems(routes);
     return this._skipEmpty(items);
   }
 
-  public getCurrentItem(): any {
+  getCurrentItem(): any {
     return this._currentMenuItem;
   }
 
-  public selectMenuItem(menuItems: any[]): any[] {
-    let items = [];
+  selectMenuItem(menuItems: any[]): any[] {
+    const items = [];
     menuItems.forEach((item) => {
       this._selectItem(item);
 
@@ -58,7 +58,7 @@ export class BaMenuService {
   }
 
   protected _skipEmpty(items: any[]): any[] {
-    let menu = [];
+    const menu = [];
     items.forEach((item) => {
       let menuItem;
       if (item.skip) {
@@ -78,11 +78,11 @@ export class BaMenuService {
   }
 
   protected _convertArrayToItems(routes: any[], parent?: any): any[] {
-    let items = [];
+    const items = [];
     routes.forEach((route) => {
       items.push(this._convertObjectToItem(route, parent));
     });
-    return items;
+    return _.uniq(items);
   }
 
   protected _convertObjectToItem(object, parent?: any): any {
@@ -102,14 +102,14 @@ export class BaMenuService {
       item.route.paths = item.route.path;
     } else {
       item.route.paths = parent && parent.route && parent.route.paths ? parent.route.paths.slice(0) : ['/'];
-      if (!!item.route.path) item.route.paths.push(item.route.path);
+      if (item.route.path) { item.route.paths.push(item.route.path); }
     }
 
     if (object.children && object.children.length > 0) {
       item.children = this._convertArrayToItems(object.children, item);
     }
 
-    let prepared = this._prepareItem(item);
+    const prepared = this._prepareItem(item);
 
     // if current item is selected or expanded - then parent is expanded too
     if ((prepared.selected || prepared.expanded) && parent) {
@@ -130,7 +130,8 @@ export class BaMenuService {
   }
 
   protected _selectItem(object: any): any {
-    object.selected = this._router.isActive(this._router.createUrlTree(object.route.paths), object.pathMatch === 'full');
+    object.selected = this._router.isActive(
+      this._router.createUrlTree(object.route.paths), object.pathMatch === 'full');
     return object;
   }
 }

@@ -427,19 +427,97 @@ top:0;
 div.tooltip {
   position: absolute;
   top:0;
-  text-align: center;
-  width: 180px;
-  height: 100px;
-  padding: 5px;
+  display:flex;
+  align-items: start;
+ padding: 0;
   font: 12px sans-serif;
-  background: #e8e8e8;
+  
   border: 0px;
-  border-radius: 2px;
+  
   pointer-events: none;
   opacity: 0;
-  color: #424242;
+  
+
+}
+div.tooltip-content{
+background: #e8e8e8;
+color: #424242;
+text-align: center;
+border-radius: 2px;
+      border: 1px solid #424242;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+div.tooltip-right{
+  margin-left:10px;
+}
+div.tooltip-header {
+  width:100%;
+  text-align: center;
+  background-color: #757575;
+  color:#ffffff;
+  border-bottom: 1px solid #424242;
+  padding: 5px 10px;
+}
+div.tooltip-body{
+  padding: 5px;
+  display:flex;
+  flex-direction:column;
+}
+div.tooltip-row{
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+}
+div.tooltip-data{
+  margin-left: 10px;
+}
+div.tooltip-grid-header{
+  padding: 5px 10px;
+  color:#ffffff;
+  background-color: #424242;
+  margin: -5px -5px 5px -5px;
+}
+.ttd-po{
+  width: 50px;
+  text-align: left !important;
+}
+.ttd-vendor{
+  width: 100px;
+  text-align: left !important;
+}
+.ttd-customer{
+  width: 60px;
+  text-align: left !important;
+}
+.arrow_box {
+	position: relative;
+	background: #757575;
+	border: 1px solid #424242;
+}
+.arrow_box:after, .arrow_box:before {
+	right: 100%;
+	top: 10px;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.arrow_box:after {
+	border-color: rgba(117, 117, 117, 0);
+	border-right-color: #757575;
+	border-width: 10px;
+	margin-top: -10px;
+}
+.arrow_box:before {
+	border-color: rgba(66, 66, 66, 0);
+	border-right-color: #424242;
+	border-width: 11px;
+	margin-top: -11px;
+}
+
 .bubble{
   cursor:pointer;
 }
@@ -479,4 +557,52 @@ div.tooltip {
       -ms-transform: rotate(90deg); /* IE 9 */
     -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
     transform: rotate(90deg);
+}
+.elementOverlay{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: rgba(0,0,0,.23);
+}
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+.axis path,
+.axis line,
+ {
+  fill: none;
+  stroke-width:1px;
+  stroke: #999;
+}
+.axis.axis--x.no-grid-lines .tick,
+.axis.axis--y.no-grid-lines .tick {
+  display:none;
+}
+.d3-menu{
+position: absolute;
+top:25px;
+  right:7px;
+    display:flex;
+  flex-direction:column;
+}
+.d3-menu-btn{
+  color: #757575;
+  cursor:pointer;
+  width:40px;
+  height:40px;
+}
+.d3-menu-btn i {
+  font-size:36px;
+}
+.d3-menu-btn:hover{
+color:#ef7b38;
+}
+.d3-menu-btn:hover i{
+font-size:38px;
 }

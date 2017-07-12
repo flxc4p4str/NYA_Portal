@@ -11,52 +11,54 @@
 
             </div>
 
-            <p-dataTable #dt [value]="POTORDR1s" 
-            [globalFilter]="gb" [(selection)]="selectedPO" 
-            [paginator]="true" [rows]="10" [responsive]="true"
+            <p-dataTable #dt [value]="POTORDR1s" [globalFilter]="gb" [(selection)]="selectedPO" [paginator]="true" [rows]="10" [responsive]="true"
                 selectionMode="single" exportFilename="purchaseOrders" (onRowSelect)="onRowHeaderSelect($event)" (onRowUnselect)="onRowHeaderUnselect($event)"
                 dataKey="poOrderNo">
                 <p-header>Open Purchase Orders</p-header>
                 <p-column field="poOrderNo" header="PO" [sortable]="true" [style]="{'width':'80px'}"></p-column>
                 <p-column field="vendCode" header="Supplier" [sortable]="true"></p-column>
-                <p-column field="poQtyOrd" header="Qty" [sortable]="true" [style]="{'width':'100px'}">
+                <p-column field="poQtyOrd_f" sortField="poQtyOrd" header="Qty" [sortable]="true" [style]="{'width':'100px'}">
                     <ng-template let-col let-po="rowData" pTemplate="body">
                         <span class="cell-numeric">{{po[col.field]}}</span>
                     </ng-template>
                 </p-column>
+                <p-column field="poCtnsOrd_f" sortField="poCtnsOrd" header="Ctns" [sortable]="true" [style]="{'width':'100px'}">
+                    <ng-template let-col let-po="rowData" pTemplate="body">
+                        <span class="cell-numeric">{{po[col.field]}}</span>
+                    </ng-template>
+                </p-column>
+                <p-column field="poDateShipByMin_f" sortField="poDateShipByMin" header="ETD" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
                 <p-column field="poFobDesc" header="FOB" [sortable]="true"></p-column>
-                <p-column field="poReference" header="Reference" [sortable]="true"></p-column>
-                <p-column field="poDateShipByMin_f" header="Ship By" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
-                <p-column field="poDateEta_f" header="ETA" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
+
+                <p-column field="whseCode" header="Whse" [sortable]="true" [style]="{'width':'100px'}"></p-column>
+
                 <p-column field="poShipVia" header="Via" [sortable]="true" [style]="{'width':'100px'}"></p-column>
-                <p-column field="poCartonMarks" header="Marks" [sortable]="true" [style]="{'width':'100px'}"></p-column>
-                <p-column field="poCtnsOrd" header="Ctns" [sortable]="true" [style]="{'width':'100px'}">
-                    <ng-template let-col let-po="rowData" pTemplate="body">
-                        <span class="cell-numeric">{{po[col.field]}}</span>
-                    </ng-template>
-                </p-column>
-                <p-column field="poCubeOrd" header="Cube" [sortable]="true" [style]="{'width':'100px'}">
-                    <ng-template let-col let-po="rowData" pTemplate="body">
-                        <span class="cell-numeric">{{po[col.field]}}</span>
-                    </ng-template>
-                </p-column>
+
+                <p-column field="poSpecOrdrNo" header="Customer" [sortable]="true"></p-column>
+
                 <p-column styleClass="col-button" [style]="{'width':'40px','text-align': 'center'}">
-
                     <ng-template let-po="rowData" pTemplate="body">
-                        <!--<a href="http://abs.nyagportal.com/ViewPO/044042_0.PDF" target="_blank">
-                            <div class="btn-ripple view-pdf-btn">
-                                <i class="material-icons">picture_as_pdf</i>
-                            </div>
-                        </a>-->
-
-                        <div (click)="viewPDF(po)">
+                        <div *ngIf="!po.downloading" (click)="viewPDF(po)">
                             <div class="btn-ripple view-pdf-btn">
                                 <i class="material-icons">picture_as_pdf</i>
                             </div>
                         </div>
-
+                        <div *ngIf="po.downloading" class="download-spinner">
+                            <svg class="pdf-spinner" width="29px" height="29px" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+                                <circle class="path" fill="none" stroke-width="3" stroke-linecap="round" cx="15" cy="15" r="13"></circle>
+                            </svg>
+                        </div>
                     </ng-template>
                 </p-column>
+
+                <!--<p-column field="poReference" header="Reference" [sortable]="true"></p-column>
+                <p-column field="poDateEta_f" header="ETA" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
+                <p-column field="poCartonMarks" header="Marks" [sortable]="true" [style]="{'width':'100px'}"></p-column>
+                <p-column field="poCubeOrd" header="Cube" [sortable]="true" [style]="{'width':'100px'}">
+                    <ng-template let-col let-po="rowData" pTemplate="body">
+                        <span class="cell-numeric">{{po[col.field]}}</span>
+                    </ng-template>
+                </p-column>-->
 
             </p-dataTable>
         </div>
@@ -70,21 +72,30 @@
                 <p-column field="poOrderLno" header="Ln" [sortable]="true" [style]="{'width':'80px','text-align': 'center'}"></p-column>
                 <p-column field="styleCode" header="Style" [filter]="true" filterMatchMode="contains" [sortable]="true" [style]="{'width':'160px'}"></p-column>
                 <p-column field="styleDesc" header="Description" [filter]="true" filterMatchMode="contains" [sortable]="true"></p-column>
-                <p-column field="poQtyOrd" header="Qty" [sortable]="true" [style]="{'width':'100px'}">
+                <p-column field="poDateShipBy_f" sortField="poDateShipBy" header="ETD" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
+                <p-column field="poQtyOpn_f" sortField="poQtyOpn" header="Open" [sortable]="true" [style]="{'width':'100px'}">
                     <ng-template let-col let-po="rowData" pTemplate="body">
                         <span class="cell-numeric">{{po[col.field]}}</span>
                     </ng-template>
                 </p-column>
-                <p-column field="poDateShipBy_f" header="Ship By" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
-                <p-column field="poDateEta_f" header="ETA" [sortable]="true" [style]="{'width':'125px','text-align': 'center'}"></p-column>
-                <p-column field="cartonPackQty" header="Ctn Qty" [sortable]="true" [style]="{'width':'120px'}">
+                <p-column field="cartonPackQty_f" sortField="cartonPackQty" header="u/Cs" [sortable]="true" [style]="{'width':'100px'}">
                     <ng-template let-col let-po="rowData" pTemplate="body">
                         <span class="cell-numeric">{{po[col.field]}}</span>
                     </ng-template>
                 </p-column>
-                <p-column field="innerPackQty" header="Inner Qty" [sortable]="true" [style]="{'width':'120px'}">
+                <p-column field="innerPackQty_f" sortField="innerPackQty" header="u/In" [sortable]="true" [style]="{'width':'100px'}">
                     <ng-template let-col let-po="rowData" pTemplate="body">
                         <span class="cell-numeric">{{po[col.field]}}</span>
+                    </ng-template>
+                </p-column>
+                <p-column field="ctnsCalc_f" sortField="ctnsCalc" header="Ctns" [sortable]="true" [style]="{'width':'100px'}">
+                    <ng-template let-col let-po="rowData" pTemplate="body">
+                        <span class="cell-numeric">{{po[col.field]}}</span>
+                    </ng-template>
+                </p-column>
+                <p-column field="poCostVcost" header="PO Cost" [sortable]="true" [style]="{'width':'100px'}">
+                    <ng-template let-col let-po="rowData" pTemplate="body">
+                        <span class="cell-numeric">{{po[col.field] | currency:'USD':true}}</span>
                     </ng-template>
                 </p-column>
             </p-dataTable>

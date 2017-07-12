@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { AppTranslationModule } from '../../app.translation.module';
 import { NgaModule } from '../../theme/nga.module';
 
-import { PortsComponent } from './ports.component';
-import { routing } from './ports.routing';
+import { LogisticsComponent } from './logistics.component';
+import { routing } from './logistics.routing';
 import { ElementOverlayDirective } from './../../elementOverlay.directive';
 
 @NgModule({
@@ -17,7 +17,7 @@ import { ElementOverlayDirective } from './../../elementOverlay.directive';
     routing,
   ],
   declarations: [
-    PortsComponent,
+    LogisticsComponent,
   ],
 })
-export class PortsModule { }
+export class LogisticsModule { }

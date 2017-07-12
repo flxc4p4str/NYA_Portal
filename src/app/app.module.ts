@@ -19,6 +19,7 @@ import { HttpClientService } from './http-client';
 import { UserService } from './user.service';
 import { DataService } from './data.service';
 import { ABSFunctions } from './abs.functions';
+import { ABSDataURI } from './abs.dataUri';
 import { NgaModule } from './theme/nga.module';
 import { PagesModule } from './pages/pages.module';
 
@@ -34,6 +35,7 @@ const APP_PROVIDERS = [
   UserService,
   DataService,
   ABSFunctions,
+  ABSDataURI,
 ];
 
 export type StoreType = {

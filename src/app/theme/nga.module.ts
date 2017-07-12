@@ -1,17 +1,18 @@
 
 import { NgModule, ModuleWithProviders }      from '@angular/core';
-import { CommonModule }  from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgUploaderModule } from 'ngx-uploader';
 import { AppTranslationModule } from '../app.translation.module';
+import { ElementOverlayDirective } from '../elementOverlay.directive';
 
 import {
-  BaThemeConfig
+  BaThemeConfig,
 } from './theme.config';
 
 import {
-  BaThemeConfigProvider
+  BaThemeConfigProvider,
 } from './theme.configProvider';
 
 import {
@@ -30,7 +31,7 @@ import {
   BaPageTop,
   BaPictureUploader,
   BaSidebar,
-  BaFileUploader
+  BaFileUploader,
 } from './components';
 
 import { BaCardBlur } from './components/baCard/baCardBlur.directive';
@@ -83,31 +84,32 @@ const NGA_DIRECTIVES = [
   BaSlimScroll,
   BaThemeRun,
   BaCardBlur,
+  ElementOverlayDirective,
 ];
 
 const NGA_PIPES = [
   BaAppPicturePipe,
   BaKameleonPicturePipe,
-  BaProfilePicturePipe
+  BaProfilePicturePipe,
 ];
 
 const NGA_SERVICES = [
   BaImageLoaderService,
   BaThemePreloader,
   BaThemeSpinner,
-  BaMenuService
+  BaMenuService,
 ];
 
 const NGA_VALIDATORS = [
   EmailValidator,
-  EqualPasswordsValidator
+  EqualPasswordsValidator,
 ];
 
 @NgModule({
   declarations: [
     ...NGA_PIPES,
     ...NGA_DIRECTIVES,
-    ...NGA_COMPONENTS
+    ...NGA_COMPONENTS,
   ],
   imports: [
     CommonModule,
@@ -121,7 +123,7 @@ const NGA_VALIDATORS = [
     ...NGA_PIPES,
     ...NGA_DIRECTIVES,
     ...NGA_COMPONENTS,
-  ]
+  ],
 })
 export class NgaModule {
   static forRoot(): ModuleWithProviders {
@@ -131,7 +133,7 @@ export class NgaModule {
         BaThemeConfigProvider,
         BaThemeConfig,
         ...NGA_VALIDATORS,
-        ...NGA_SERVICES
+        ...NGA_SERVICES,
       ],
     };
   }

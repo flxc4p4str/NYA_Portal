@@ -64,11 +64,13 @@ import { HttpClientService } from './http-client';
 
 import * as authGlobals from './auth.globals';
 import * as FileSaver from 'file-saver';
+import * as d3 from 'd3';
+import { ABSDataURI } from './abs.dataUri';
 
 @Injectable()
 export class ABSFunctions {
 
-    constructor(private http: HttpClientService) {
+    constructor(private http: HttpClientService, private dataUri: ABSDataURI) {
 
     }
     private MONTH_NAMES = new Array(
@@ -98,6 +100,167 @@ export class ABSFunctions {
     // passing it to this function, as whitespace is NOT ignored!
     // ------------------------------------------------------------------
 
+    exportToPng(opts): Promise<any> {
+
+        return new Promise((resolve, reject) => {
+            // this is a shitty hack that should probably be embedded in the
+            // svg_crowbar function
+            const svgEl = d3.select('svg')
+                .attr('version', 1.1)
+                .attr('xmlns', 'http://www.w3.org/2000/svg');
+
+            // this is the main thing that does the work
+            this.svgCrowbar(d3.select(opts.selector).node().children[0], {
+                filename: opts.fileName,
+                width: $(opts.selector).width(),
+                height: $(opts.selector).height(),
+                crowbar_el: d3.select('#crowbar-workspace').node(),
+                bgColor: '#F0F3F4',
+                header: false,
+                legendData: opts.legendData,
+            }).then(function (result) {
+                resolve(result);
+            });
+        });
+
+    }
+
+    svgCrowbar(svgElm, options) {
+        return new Promise((resolve, reject) => {
+            // TODO: should probably do some checking to make sure that svgElm is
+            // actually a <svg> and throw a friendly error otherwise
+
+            const html = svgElm.outerHTML;
+            const filename = options.filename || 'download.png';
+            const width = options.width; // TODO: add fallback value based on svg attributes
+            const height = options.height; // TODO: add fallback value based on svg attributes
+            const crowbar_el = options.crowbar_el; // TODO: element for preparing the canvas element
+            const backgroundColor = options.bgColor;
+            const addWatermark = false;
+            const exportHeader = options.header;
+            const headerHeight = (exportHeader) ? 102 : 0;
+            const nyaLogo = this.dataUri.uriImages().nyaLogoTrans;
+            const chartImage = `data:image/svg+xml;base64, ${btoa(html)}`;
+
+            applyStylesheets(svgElm);
+
+            crowbar_el.innerHTML = (
+                '<canvas width="' + (width + 80) + '" height="' + (height + 102) + '"></canvas>'
+            );
+            const canvas = crowbar_el.querySelector('canvas');
+            const context = canvas.getContext('2d');
+            context.fillStyle = '#FFFFFF';
+            context.fillRect(0, headerHeight, width + 80, (height + 102));
+
+
+            context.fillStyle = '#F0F3F4';
+            context.fillRect(0, 0, (width + 80), 102);
+
+            context.beginPath();
+            context.lineWidth = '1';
+            context.strokeStyle = '#757575';
+            context.rect(0, 0, (width + 80) - 1, 102);
+            context.stroke();
+
+            const sources = {
+                nyaLogo,
+                chartImage,
+            };
+
+            let i = 0;
+
+            if (options.legendData) {
+                for (const pv of options.legendData) {
+                    context.beginPath();
+                    const keyX = (width - 50);
+                    const keyY = 142 + (i * 15);
+
+                    context.fillStyle = pv['keyColor'];
+                    if (pv['type'] === 'S') {
+                        context.fillRect(keyX, keyY, 10, 10);
+                    } else {
+                        context.arc(keyX + 5, keyY + 5, 5, 0, 2 * Math.PI, false);
+                        context.fill();
+                    }
+                    context.fillStyle = '#000000';
+                    context.textBaseline = 'top';
+                    context.fillText(pv['legendText'], (keyX + 20), keyY);
+                    i += 1;
+                }
+            }
+
+
+            this.loadImages(sources).then(function (images) {
+                context.drawImage(images.nyaLogo, 5, 5, 221, 92);
+                context.drawImage(images.chartImage, 0, 102);
+
+                context.beginPath();
+                context.lineWidth = '1';
+                context.strokeStyle = '#757575';
+                context.rect(0, 102, (width + 80) - 1, height);
+                context.stroke();
+
+
+                const canvasdata = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.download = filename;
+                a.href = canvasdata;
+                a.click();
+                $('#crowbar-workspace').empty();
+                resolve('Export Complete');
+            });
+
+            function applyStylesheets(svgEl) {
+                const emptySvg = window.document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                window.document.body.appendChild(emptySvg);
+                const emptySvgDeclarationComputed = getComputedStyle(emptySvg);
+                emptySvg.parentNode.removeChild(emptySvg);
+                const allElements = traverse(svgEl);
+                let i = allElements.length;
+                while (i--) {
+                    explicitlySetStyle(allElements[i], emptySvgDeclarationComputed);
+                }
+            }
+
+            function explicitlySetStyle(element, emptySvgDeclarationComputed) {
+                const cSSStyleDeclarationComputed = getComputedStyle(element);
+                let i, len, key, value;
+                let computedStyleStr = '';
+                for (i = 0, len = cSSStyleDeclarationComputed.length; i < len; i++) {
+                    key = cSSStyleDeclarationComputed[i];
+                    value = cSSStyleDeclarationComputed.getPropertyValue(key);
+                    if (value !== emptySvgDeclarationComputed.getPropertyValue(key)) {
+                        computedStyleStr += key + ':' + value + ';';
+                    }
+                }
+                element.setAttribute('style', computedStyleStr);
+            }
+
+            function traverse(obj) {
+                const tree = [];
+                const ignoreElements = {
+                    'script': undefined,
+                    'defs': undefined,
+                };
+                tree.push(obj);
+                visit(obj);
+                function visit(node) {
+                    if (node && node.hasChildNodes() && !(node.nodeName.toLowerCase() in ignoreElements)) {
+                        let child = node.firstChild;
+                        while (child) {
+                            if (child.nodeType === 1) {
+                                tree.push(child);
+                                visit(child);
+                            }
+                            child = child.nextSibling;
+                        }
+                    }
+                }
+                return tree;
+            }
+        });
+    }
+
     loadImages(sources): Promise<any> {
         const images = {};
         let loadedImages = 0;
@@ -118,7 +281,6 @@ export class ABSFunctions {
             }
         });
     }
-
 
     isDate(val, format) {
         const date = this.getDateFromFormat(val, format);
@@ -453,16 +615,23 @@ export class ABSFunctions {
         } return null;
     }
 
-    viewDocument(documentRequest) {
+    numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    viewDocument(documentRequest): Promise<any> {
         const api = `${authGlobals.apiBase}api/ABS/ViewDocument`;
         const contentType = documentRequest.contentType || 'application/pdf';
         const dr = documentRequest;
-        this.http.postForBlob(api, dr).subscribe(
-            (response) => { // download file
-                const blob = new Blob([response.blob()], { type: contentType });
-                const fn = `${documentRequest.codeValue}.pdf`;
-                FileSaver.saveAs(blob, fn);
-            });
+        return new Promise((resolve, reject) => {
+            this.http.postForBlob(api, dr).subscribe(
+                (response) => { // download file
+                    const blob = new Blob([response.blob()], { type: contentType });
+                    const fn = `${documentRequest.codeValue}.pdf`;
+                    FileSaver.saveAs(blob, fn);
+                    resolve(fn);
+                });
+        });
     }
 
     private handleError(error: Response) {

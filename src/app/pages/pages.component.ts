@@ -38,6 +38,7 @@ export class Pages implements OnInit {
 
   buildMenu() {
     this.menu = PAGES_MENU;
+    this._menuService.updateMenuByRoutes(<Routes>this.menu);
     this._userService.myUserObject().subscribe(result => {
       const userMenu = result.userMenu.sort(function (a, b) { return a.menuItemSeq - b.menuItemSeq; });
       let menuItemSelected = true;

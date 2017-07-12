@@ -3,6 +3,7 @@ import { DataService } from '../../data.service';
 import { DataTableModule, SharedModule } from 'primeng/primeng';
 import { ABSFunctions } from '../../abs.functions';
 import { BaThemePreloader, BaThemeSpinner } from '../../theme/services';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
 @Component({
   selector: 'nga-purchase-orders',
@@ -20,10 +21,11 @@ export class PurchaseOrdersComponent implements OnInit {
   showPO: string;
   poSelected: boolean;
   detailView: boolean;
+  pdfRequest: any[];
   POTORDR2s: any[];
   totalRecords: number;
   constructor(private absFunctions: ABSFunctions, private _dataService: DataService, private _spinner: BaThemeSpinner,
-  ) {
+    private _msg: ToastyService) {
   }
 
   ngOnInit() {
@@ -37,12 +39,15 @@ export class PurchaseOrdersComponent implements OnInit {
       this._dataService.getOpenPOs()
         .subscribe(
         x => {
-          console.log(x);
+
           if (x) {
 
             for (let po of x) {
+              po.poQtyOrd_f = this.absFunctions.numberWithCommas(po.poQtyOrd);
+              po.poCtnsOrd_f = this.absFunctions.numberWithCommas(po.poCtnsOrd);
               po.poDateShipByMin_f = this.absFunctions.formatDate(po.poDateShipByMin, "MM/dd/yyyy");
               po.poDateEta_f = this.absFunctions.formatDate(po.poDateEta, "MM/dd/yyyy");
+              po.downloaing = false;
             }
             this.POTORDR1s = x;
             this._spinner.hide();
@@ -60,12 +65,21 @@ export class PurchaseOrdersComponent implements OnInit {
     });
   }
   viewPDF(po) {
+    const that = this;
+    this.pdfRequest = po;
+    po.downloading = true;
     const docRequest = {
       'documentType': 'PO',
       'codeValue': po.poOrderNo,
     };
-    console.log(docRequest);
-    this.absFunctions.viewDocument(docRequest);
+    this.absFunctions.viewDocument(docRequest).then(function (resp) {
+      that.downloadComplete('Download Complete');
+
+    });
+  }
+  downloadComplete(msg) {
+    this.pdfRequest['downloading'] = false;
+    this._msg.success(msg);
   }
   showPODetails(PO) {
     this._dataService.getPO(PO)
@@ -73,8 +87,14 @@ export class PurchaseOrdersComponent implements OnInit {
       x => {
         if (x) {
           for (let pod of x) {
+            pod.poQtyOpn_f = this.absFunctions.numberWithCommas(Number(pod.poQtyOpn));
+            pod.cartonPackQty_f = this.absFunctions.numberWithCommas(Number(pod.cartonPackQty));
+            pod.innerPackQty_f = this.absFunctions.numberWithCommas(Number(pod.innerPackQty));
             pod.poDateShipBy_f = this.absFunctions.formatDate(pod.poDateShipBy, "MM/dd/yyyy");
             pod.poDateEta_f = this.absFunctions.formatDate(pod.poDateEta, "MM/dd/yyyy");
+            let z = (Number(pod.cartonPackQty) > 0) ? (Number(pod.poQtyOrd) / Number(pod.cartonPackQty)) : 0;
+            pod.ctnsCalc = z;
+            pod.ctnsCalc_f = parseFloat((Math.round(z * 100) / 100).toString()).toFixed(2);
           }
           this.POTORDR2s = x; // x.slice(x.length-5);
           this.showPO = PO;

@@ -22,7 +22,7 @@ export class DataService {
     POTORDR2s: any[];
     constructor(private http: HttpClientService) { }
     getForcastData(): Observable<any> {
-        let api = authGlobals.apiBase + 'api/NYA/GetPOForcast';
+        const api = authGlobals.apiBase + 'api/NYA/GetPOForcast';
         return this.http
             .get(api)
             .map(response => {
@@ -37,7 +37,7 @@ export class DataService {
     }
 
     getOpenPOs(): Observable<any> {
-        let api = authGlobals.apiBase + 'api/NYA/OpenPOs';
+        const api = authGlobals.apiBase + 'api/NYA/OpenPOs';
         return this.http
             .post(api, {})
             .map(response => {
@@ -52,7 +52,7 @@ export class DataService {
             .catch(this.handleError);
     }
     getOpenPOsByPort(): Observable<any> {
-        let api = authGlobals.apiBase + 'api/NYA/OpenPOsByPort';
+        const api = authGlobals.apiBase + 'api/NYA/OpenPOsByPort';
         return this.http
             .post(api, {})
             .map(response => {
@@ -67,7 +67,7 @@ export class DataService {
     }
 
     getPO(poOrderNo): Observable<any> {
-        let api = authGlobals.apiBase + 'api/NYA/ViewPO';
+        const api = authGlobals.apiBase + 'api/NYA/ViewPO';
         return this.http
             .post(api, { 'poOrderNo': poOrderNo })
             .map(response => {
@@ -82,12 +82,26 @@ export class DataService {
             .catch(this.handleError);
     }
 
+    shipmentsAndOpenPOs(): Observable<any> {
+        const api = `${authGlobals.apiBase}api/NYA/ShipmentsAndOpenPOs`;
+        return this.http
+            .post(api, {})
+            .map(response => {
+                if (response.status === 400) {
+                    return 'FAILURE';
+                } else if (response.status === 200) {
+                    return response.json();
+                }
+            },
+        ).share()
+            .catch(this.handleError);
+    }
+
     private handleError(error: Response) {
         console.error(error);
-        let msg = `Error status code ${error.status} at ${error.url}`;
+        const msg = `Error status code ${error.status} at ${error.url}`;
         return Observable.throw(msg);
     }
 }
-
 
 

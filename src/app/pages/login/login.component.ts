@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Http, Headers } from '@angular/http';
-import { Router } from '@angular/router';
+import { Router, Routes } from '@angular/router';
+import { BaMenuService } from '../../theme';
 import { UserService } from '../../user.service';
-import {ToastyService, ToastyConfig, ToastOptions, ToastData} from 'ng2-toasty';
+import { ToastyService, ToastyConfig, ToastOptions, ToastData } from 'ng2-toasty';
 
 import * as authGlobals from '../../auth.globals';
 
@@ -19,9 +20,9 @@ export class LoginComponent implements OnInit {
   password: AbstractControl;
   submitted: boolean = false;
   submitting: boolean = false;
-authMsg: string = '';
+  authMsg: string = '';
   constructor(fb: FormBuilder, private http: Http, private router: Router
-    , private _userService: UserService, private _msg: ToastyService) {
+    , private _userService: UserService, private _msg: ToastyService, private _menuService: BaMenuService) {
     this.form = fb.group({
       'username': ['', Validators.compose([Validators.required, Validators.minLength(3)])],
       'password': ['', Validators.compose([Validators.required, Validators.minLength(4)])],
@@ -29,6 +30,14 @@ authMsg: string = '';
 
     this.username = this.form.controls['username'];
     this.password = this.form.controls['password'];
+    const newMenu = [
+      {
+        path: 'pages',
+        children: [
+        ],
+      },
+    ];
+    this._menuService.updateMenuByRoutes(<Routes>newMenu);
   }
   autoFillForm() {
     const x = location.hostname;
@@ -39,7 +48,7 @@ authMsg: string = '';
     }
   }
   keyDownFunction(event, values: Object) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       this.onSubmit(values);
       // rest of your code
     }
@@ -116,30 +125,30 @@ authMsg: string = '';
     });
   }
 
-    // addToast() {
-    //     // Just add default Toast with title only
-        
-    //     // Or create the instance of ToastOptions
-    //     var toastOptions:ToastOptions = {
-    //         title: "My title",
-    //         msg: "The message",
-    //         showClose: true,
-    //         timeout: 5000,
-    //         theme: 'default',
-    //         onAdd: (toast:ToastData) => {
-    //             console.log('Toast ' + toast.id + ' has been added!');
-    //         },
-    //         onRemove: function(toast:ToastData) {
-    //             console.log('Toast ' + toast.id + ' has been removed!');
-    //         }
-    //     };
-    //     // Add see all possible types in one shot
-    //     this.toastyService.info(toastOptions);
-    //     this.toastyService.success(toastOptions);
-    //     this.toastyService.wait(toastOptions);
-    //     this.toastyService.error(toastOptions);
-    //     this.toastyService.warning(toastOptions);
-    // }
+  // addToast() {
+  //     // Just add default Toast with title only
+
+  //     // Or create the instance of ToastOptions
+  //     var toastOptions:ToastOptions = {
+  //         title: "My title",
+  //         msg: "The message",
+  //         showClose: true,
+  //         timeout: 5000,
+  //         theme: 'default',
+  //         onAdd: (toast:ToastData) => {
+  //             console.log('Toast ' + toast.id + ' has been added!');
+  //         },
+  //         onRemove: function(toast:ToastData) {
+  //             console.log('Toast ' + toast.id + ' has been removed!');
+  //         }
+  //     };
+  //     // Add see all possible types in one shot
+  //     this.toastyService.info(toastOptions);
+  //     this.toastyService.success(toastOptions);
+  //     this.toastyService.wait(toastOptions);
+  //     this.toastyService.error(toastOptions);
+  //     this.toastyService.warning(toastOptions);
+  // }
 
 
 }

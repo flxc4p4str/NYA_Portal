@@ -1,42 +1,44 @@
 <div class="profile" [ngClass]="{'profile-expanded':active}">
-            <div class="profile-image"></div>
-            <a href="#" (click)="onClick($event)">
+    <div class="profile-image"></div>
+    <a href="#" (click)="onClick($event)">
                 <span class="profile-name">{{displayName}}</span>
                 <i class="material-icons">keyboard_arrow_down</i>
             </a>
-        </div>
+</div>
 
-        <ul class="ultima-menu profile-menu" [@menu]="active ? 'visible' : 'hidden'">
-<!--            <li role="menuitem">
-                <a href="#" (click)="menuItemLocked($event)" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
-                    <i class="material-icons">person</i>
-                    <span>Profile</span>
-                </a>
-            </li>
-            <li role="menuitem">
-                <a href="#" (click)="menuItemLocked($event)" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
-                    <i class="material-icons">security</i>
-                    <span>Privacy</span>
-                </a>
-            </li>
-            <li role="menuitem">
-                <a href="#" (click)="menuItemLocked($event)" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
-                    <i class="material-icons">settings_application</i>
-                    <span>Settings</span>
-                </a>
-            </li>-->
-            <li role="menuitem">
-                <a (click)="refreshMenu()" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
+<ul class="ultima-menu profile-menu" [@menu]="active ? 'visible' : 'hidden'">
+    <li role="menuitem">
+        <a (click)="refreshMenu()" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
                     <i class="material-icons">clear_all</i>
                     <span>Refresh Menu</span>
                 </a>
-            </li>            
-            <li role="menuitem">
-                <a href="#" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
+    </li>
+    <li role="menuitem">
+        <a href="#" class="ripplelink" [attr.tabindex]="!active ? '-1' : null">
                     <i class="material-icons">power_settings_new</i>
                     <span>Logout</span>
                 </a>
+    </li>
+    <li role="menuitem" *ngIf="showProfileSettings" >
+        <a href="#" (click)="onClickSettings($event)">
+                <i class="material-icons">settings</i>
+                <span >Profile Settings</span>
+            </a>
+        <ul class="ultima-menu settings-menu" [@menu]="settingsActive ? 'visible' : 'hidden'">
+            <li role="menuitem">
+                <a href="#" (click)="onClickWarehouse($event)">
+                        <i class="material-icons">business</i>
+                <span class="profile-name">My Warehouses</span>
+            </a>
+                <ul class="ultima-menu whse-menu" [@menu]="warehouseActive ? 'visible' : 'hidden'">
+                    <li class="menu-item pw-item" *ngFor="let whse of whseList">
+                        <div class="pw-field pw-code">{{whse.whseCode}}</div>
+                        <div class="pw-field pw-desc">{{whse.whseDesc}}</div>
+                    </li>
+                </ul>
             </li>
         </ul>
 
-        
+
+    </li>
+</ul>
